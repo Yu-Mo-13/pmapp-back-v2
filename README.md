@@ -157,48 +157,57 @@ docker compose exec app composer larastan
 
 GitHub Actionsで以下が自動実行されます：
 
-#### コードレビューワークフロー (`.github/workflows/reviewdog.yml`, `.github/workflows/code-quality.yml`)
-- **自動コードレビュー**: ReviewDogによるPRコメントでの指摘
-- **差分ベース**: 変更されたファイルのみを対象とした効率的なチェック
-- **複数ツール統合**: PHPCS、PHPStan、セキュリティ監査を統合
-- **リアルタイムフィードバック**: PRコメントで即座にフィードバック提供
-
-#### テストワークフロー (`.github/workflows/tests.yml`)
+#### 📋 テストワークフロー (`.github/workflows/tests.yml`)
 - **マルチPHPバージョン対応**: PHP 8.1, 8.2でテスト実行
 - **データベーステスト**: PostgreSQL, Redis環境でのテスト
 - **マイグレーション**: 自動的にデータベースマイグレーション実行
 - **カバレッジ**: Codecov によるテストカバレッジ測定
 
-#### PHP CodeSnifferワークフロー (`.github/workflows/phpcs.yml`)
-- **コーディング規約チェック**: PSR-12準拠の自動チェック
-- **ReviewDog統合**: PRコメントでの自動フィードバック
-- **アノテーション**: PR内で問題箇所を直接表示
-- **修正提案**: 自動修正コマンドの提案
+#### 🔍 コード品質ワークフロー (`.github/workflows/code-quality.yml`)
+**統合されたコード品質チェック - 重複を排除した効率的な構成**
 
-#### Larastanワークフロー (`.github/workflows/larastan.yml`)
-- **マルチPHPバージョン対応**: PHP 8.1, 8.2での静的解析
-- **Laravel特化**: Laravel専用の型チェック・バグ検出
-- **ReviewDog統合**: PRでの静的解析結果の自動コメント
-- **結果保存**: 解析結果のアーティファクト保存
+##### Push時（mainブランチ）
+- **全体スキャン**: プロジェクト全体のPHPCS・PHPStan実行
+- **GitHub形式出力**: 問題箇所の直接表示
+- **セキュリティ監査**: 依存関係の脆弱性チェック
 
-### コード品質管理
+##### Pull Request時
+- **差分ベースチェック**: 変更されたファイルのみを効率的にチェック
+- **ReviewDog統合**: PRコメントでのリアルタイムフィードバック
+- **段階的レビュー**: warning（PHPCS）とerror（PHPStan）の適切な分類
+- **フィルタリング**: 変更箇所のコンテキストのみに焦点
+
+#### 🛠️ 統合された機能
+- **コードスタイル**: PSR-12準拠の自動チェック（PHPCS）
+- **静的解析**: Laravel特化の型安全性チェック（PHPStan/Larastan）
+- **セキュリティ**: Composer audit による脆弱性検出
+- **アーティファクト**: 解析結果の自動保存
+
+### 🎯 コード品質管理
 
 #### ReviewDog機能
-- **インライインコメント**: コード行に直接コメント
+- **インラインコメント**: コード行に直接コメント
 - **差分フィルタリング**: 変更箇所のみをチェック
-- **重要度レベル**: error, warning, info での分類
-- **複数レポーター**: github-pr-review, github-pr-check対応
+- **重要度レベル**: error, warning での適切な分類
+- **レポーター**: github-pr-review形式での詳細フィードバック
 
-#### 自動化された品質チェック
-- **コードスタイル**: PSR-12準拠チェック
-- **静的解析**: 型安全性・潜在的バグ検出
-- **セキュリティ**: 依存関係の脆弱性チェック
-- **複雑度分析**: コードの保守性評価
+#### 自動化されたワークフロー最適化
+- **重複排除**: 1つのワークフローで全コード品質チェックを統合
+- **条件分岐**: Push/PR時で異なる実行戦略
+- **効率性**: 変更ファイルのみの処理によるCI時間短縮
+- **一貫性**: 統一されたコーディング標準の適用
 
 ### 設定ファイル
 
+#### コード品質設定
 - `phpcs.xml`: PHP CodeSniffer設定（PSR-12準拠）
 - `phpstan.neon`: Larastan設定（レベル5）
-- `.github/workflows/tests.yml`: テスト実行ワークフロー
-- `.github/workflows/phpcs.yml`: コーディング規約チェックワークフロー
-- `.github/workflows/larastan.yml`: 静的解析ワークフロー
+
+#### CI/CD設定
+- `.github/workflows/tests.yml`: PHPUnitテスト実行ワークフロー
+- `.github/workflows/code-quality.yml`: 統合コード品質チェックワークフロー
+  - PHPCS（コードスタイル）
+  - PHPStan（静的解析）
+  - ReviewDog（自動レビュー）
+  - セキュリティ監査
+- `.github/scripts/reviewdog-wrapper.sh`: ReviewDog安全実行スクリプト
