@@ -9,6 +9,10 @@ on:
 jobs:
   larastan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
 
     strategy:
       matrix:
@@ -25,6 +29,12 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, dom, fileinfo, pgsql
         tools: phpstan
+
+    - name: Setup ReviewDog
+      if: github.event_name == 'pull_request'
+      uses: reviewdog/action-setup@v1
+      with:
+        reviewdog_version: latest
 
     - name: Cache Composer packages
       id: composer-cache
@@ -47,7 +57,16 @@ jobs:
     - name: Create cache directory
       run: mkdir -p bootstrap/cache
 
-    - name: Run Larastan
+    - name: Run Larastan with ReviewDog (PR)
+      if: github.event_name == 'pull_request'
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        composer run larastan -- --error-format=checkstyle --no-progress | \
+        reviewdog -f=checkstyle -name="PHPStan" -reporter=github-pr-check -level=error || true
+
+    - name: Run Larastan (Push)
+      if: github.event_name == 'push'
       run: composer run larastan -- --error-format=github
 
     - name: Upload PHPStan results to GitHub

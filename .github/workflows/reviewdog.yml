@@ -1,0 +1,81 @@
+name: ReviewDog Code Review
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  reviewdog:
+    name: Code Review with ReviewDog
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, dom, fileinfo, pgsql
+        tools: phpstan
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-8.2-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-8.2-
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Setup ReviewDog
+      uses: reviewdog/action-setup@v1
+      with:
+        reviewdog_version: latest
+
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+    - name: Generate key
+      run: php artisan key:generate
+
+    - name: Create cache directory
+      run: mkdir -p bootstrap/cache
+
+    - name: Run PHPCS with ReviewDog
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        php -d error_reporting="E_ERROR | E_WARNING | E_PARSE" vendor/bin/phpcs --report=checkstyle -q | \
+        reviewdog -f=checkstyle -name="PHPCS" -reporter=github-pr-review -level=error
+
+    - name: Run PHPStan with ReviewDog
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        composer run larastan -- --error-format=checkstyle --no-progress | \
+        reviewdog -f=checkstyle -name="PHPStan" -reporter=github-pr-review -level=error
+
+    - name: Run PHPCS diff mode with ReviewDog
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git diff --name-only --diff-filter=AM origin/main...HEAD | \
+        grep -E '\.(php)$' | \
+        xargs -r php -d error_reporting="E_ERROR | E_WARNING | E_PARSE" vendor/bin/phpcs --report=checkstyle -q | \
+        reviewdog -f=checkstyle -name="PHPCS (Diff)" -reporter=github-pr-review -level=info -diff="git diff origin/main...HEAD"
+
+    - name: Summary
+      if: always()
+      run: |
+        echo "✅ ReviewDog code review completed!"
+        echo "Check the PR comments for detailed feedback."

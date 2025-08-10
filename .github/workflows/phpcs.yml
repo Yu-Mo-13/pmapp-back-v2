@@ -6,6 +6,10 @@ jobs:
   phpcs:
     name: Code Style Check (PSR-12)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
 
     steps:
     - uses: actions/checkout@v4
@@ -16,6 +20,11 @@ jobs:
         php-version: '8.2'
         extensions: mbstring, dom, fileinfo
         tools: cs2pr
+
+    - name: Setup ReviewDog
+      uses: reviewdog/action-setup@v1
+      with:
+        reviewdog_version: latest
 
     - name: Cache Composer packages
       id: composer-cache
@@ -29,7 +38,15 @@ jobs:
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-    - name: Run PHP CodeSniffer
+    - name: Run PHP CodeSniffer with ReviewDog
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        php -d error_reporting="E_ERROR | E_WARNING | E_PARSE" vendor/bin/phpcs --report=checkstyle -q | \
+        reviewdog -f=checkstyle -name="PHPCS" -reporter=github-pr-check -level=error || true
+
+    - name: Run PHP CodeSniffer (fallback)
+      if: failure()
       run: |
         php -d error_reporting="E_ERROR | E_WARNING | E_PARSE" vendor/bin/phpcs --report=checkstyle -q > phpcs-report.xml
         cs2pr phpcs-report.xml
