@@ -1,0 +1,42 @@
+name: PHP CodeSniffer
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  phpcs:
+    name: Code Style Check (PSR-12)
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, dom, fileinfo
+        tools: cs2pr
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-8.2-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-8.2-
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Run PHP CodeSniffer
+      run: composer run phpcs -- --report=checkstyle | cs2pr
+
+    - name: Annotate results
+      if: failure()
+      run: |
+        echo "::warning::PHP CodeSniffer found issues. Please run 'composer run phpcs-fix' to auto-fix issues."

@@ -128,3 +128,52 @@ docker compose down
 # データを含めて完全削除
 docker compose down -v
 ```
+
+## 🔍 コード品質チェック
+
+### ローカルでのテスト実行
+
+```bash
+# ユニットテスト実行
+docker compose exec app composer test
+
+# カバレッジ付きテスト実行
+docker compose exec app composer test-coverage
+
+# PHP CodeSniffer実行
+docker compose exec app composer phpcs
+
+# コーディング規約の自動修正
+docker compose exec app composer phpcs-fix
+
+# Larastan（静的解析）実行
+docker compose exec app composer larastan
+```
+
+### CI/CDワークフロー
+
+GitHub Actionsで以下が自動実行されます：
+
+#### テストワークフロー (`.github/workflows/tests.yml`)
+- **マルチPHPバージョン対応**: PHP 8.1, 8.2でテスト実行
+- **データベーステスト**: PostgreSQL, Redis環境でのテスト
+- **マイグレーション**: 自動的にデータベースマイグレーション実行
+- **カバレッジ**: Codecov によるテストカバレッジ測定
+
+#### PHP CodeSnifferワークフロー (`.github/workflows/phpcs.yml`)
+- **コーディング規約チェック**: PSR-12準拠の自動チェック
+- **アノテーション**: PR内で問題箇所を直接表示
+- **修正提案**: 自動修正コマンドの提案
+
+#### Larastanワークフロー (`.github/workflows/larastan.yml`)
+- **マルチPHPバージョン対応**: PHP 8.1, 8.2での静的解析
+- **Laravel特化**: Laravel専用の型チェック・バグ検出
+- **結果保存**: 解析結果のアーティファクト保存
+
+### 設定ファイル
+
+- `phpcs.xml`: PHP CodeSniffer設定（PSR-12準拠）
+- `phpstan.neon`: Larastan設定（レベル5）
+- `.github/workflows/tests.yml`: テスト実行ワークフロー
+- `.github/workflows/phpcs.yml`: コーディング規約チェックワークフロー
+- `.github/workflows/larastan.yml`: 静的解析ワークフロー
