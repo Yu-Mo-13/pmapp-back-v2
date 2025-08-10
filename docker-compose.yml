@@ -59,9 +59,26 @@ services:
     networks:
       - pmapp-network
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pmapp-back-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - pmapp-network
+    depends_on:
+      - db
+
 volumes:
   db_data:
   redis_data:
+  pgadmin_data:
 
 networks:
   pmapp-network:
