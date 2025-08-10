@@ -1,0 +1,59 @@
+name: Larastan (Static Analysis)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  larastan:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: [8.2]
+
+    name: PHP ${{ matrix.php-version }} - Static Analysis
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, dom, fileinfo, pgsql
+        tools: phpstan
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-version }}-
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+    - name: Generate key
+      run: php artisan key:generate
+
+    - name: Create cache directory
+      run: mkdir -p bootstrap/cache
+
+    - name: Run Larastan
+      run: composer run larastan -- --error-format=github
+
+    - name: Upload PHPStan results to GitHub
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: phpstan-results-php${{ matrix.php-version }}
+        path: phpstan-results.json
+        retention-days: 7
