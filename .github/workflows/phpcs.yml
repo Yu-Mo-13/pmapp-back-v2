@@ -30,7 +30,9 @@ jobs:
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
     - name: Run PHP CodeSniffer
-      run: composer run phpcs -- --report=checkstyle | cs2pr
+      run: |
+        composer run phpcs -- --report=checkstyle --no-progress > phpcs-report.xml
+        cs2pr phpcs-report.xml
 
     - name: Annotate results
       if: failure()
