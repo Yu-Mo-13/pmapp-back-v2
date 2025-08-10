@@ -1,10 +1,6 @@
 name: PHP CodeSniffer
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ ** ]
+on: [pull_request]
 
 jobs:
   phpcs:
