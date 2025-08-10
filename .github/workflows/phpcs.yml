@@ -31,7 +31,7 @@ jobs:
 
     - name: Run PHP CodeSniffer
       run: |
-        composer run phpcs -- --report=checkstyle --no-progress > phpcs-report.xml
+        php -d error_reporting="E_ERROR | E_WARNING | E_PARSE" vendor/bin/phpcs --report=checkstyle -q > phpcs-report.xml
         cs2pr phpcs-report.xml
 
     - name: Annotate results
