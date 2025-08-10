@@ -2,9 +2,9 @@ name: Larastan (Static Analysis)
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ ** ]
 
 jobs:
   larastan:
@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        php-version: [8.1, 8.2]
+        php-version: [8.2]
 
     name: PHP ${{ matrix.php-version }} - Static Analysis
 
