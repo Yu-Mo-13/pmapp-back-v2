@@ -42,7 +42,6 @@ class LoginController extends Controller
             return ApiResponseFormatter::ok([
                 'access_token' => $authResult['access_token'],
             ]);
-
         } catch (Exception $e) {
             info("Login failed for user: $email - " . $e->getMessage());
             return ApiResponseFormatter::unprocessible('ログインに失敗しました。');
