@@ -33,6 +33,13 @@ class ApiResponseFormatter
         ], 403);
     }
 
+    public static function unprocessible(string $message = 'Unprocessible')
+    {
+        return response()->json([
+            'message' => $message
+        ], 422);
+    }
+
     public static function internalServerError(string $message = 'Internal Server Error')
     {
         return response()->json([
