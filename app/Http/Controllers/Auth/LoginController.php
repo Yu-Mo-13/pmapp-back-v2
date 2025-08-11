@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Services\SupabaseAuthService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
