@@ -4,4 +4,5 @@
 
 use App\Http\Controllers\Application\ApplicationIndexController;
 
-Route::get('/applications', ApplicationIndexController::class)->name('applications.index');
+Route::get('/applications', ApplicationIndexController::class)
+    ->name('applications.index');
