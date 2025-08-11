@@ -42,7 +42,6 @@ class SupabaseAuthMiddleware
 
         // ローカルユーザーを取得または作成
         $localUser = $this->syncUserWithDatabase($supabaseUser);
-        
         if (!$localUser) {
             return ApiResponseFormatter::internalServerError('User synchronization failed');
         }
@@ -65,7 +64,6 @@ class SupabaseAuthMiddleware
     private function syncUserWithDatabase(array $supabaseUser): ?User
     {
         $email = $supabaseUser['email'] ?? null;
-        
         if (!$email) {
             return null;
         }
@@ -75,7 +73,6 @@ class SupabaseAuthMiddleware
         if (!$user) {
             // デフォルトロールを取得（WEB_USERを仮定）
             $defaultRoleId = \App\Models\Role::where('code', 'WEB_USER')->first()?->id ?? 1;
-            
             $user = User::create([
                 'name' => $supabaseUser['user_metadata']['name'] ?? $supabaseUser['email'],
                 'email' => $email,
