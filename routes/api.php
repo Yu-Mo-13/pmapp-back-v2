@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v2')->group(function () {
+    require base_path('routes/api/v2/auth.php');
     require base_path('routes/api/v2/application.php');
 });
