@@ -14,6 +14,8 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
+        Role::truncate();
+
         Role::factory()->admin()->create();
         Role::factory()->webUser()->create();
         Role::factory()->mobileUser()->create();
