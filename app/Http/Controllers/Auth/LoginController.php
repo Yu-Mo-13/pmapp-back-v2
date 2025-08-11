@@ -21,6 +21,8 @@ class LoginController extends Controller
 
     public function __invoke(LoginRequest $request): JsonResponse
     {
+        \Log::info('Login attempt started', ['email' => $request->input('email')]);
+
         $email = $request->input('email');
         $password = $request->input('password');
 
@@ -34,6 +36,8 @@ class LoginController extends Controller
             if (!$localUser) {
                 return ApiResponseFormatter::internalServerError('User synchronization failed');
             }
+
+            \Log::info('Login successful', ['user_id' => $localUser->id]);
 
             return ApiResponseFormatter::ok([
                 'access_token' => $authResult['access_token'],
