@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Http\Enums\Role\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RoleFactory extends Factory
@@ -22,24 +23,24 @@ class RoleFactory extends Factory
     public function admin()
     {
         return $this->state([
-            'name' => 'システム管理者',
-            'code' => 'ADMIN',
+            'name' => RoleEnum::getDescription(RoleEnum::ADMIN),
+            'code' => RoleEnum::ADMIN,
         ]);
     }
 
     public function webUser()
     {
         return $this->state([
-            'name' => 'WEB一般ユーザー',
-            'code' => 'WEB_USER',
+            'name' => RoleEnum::getDescription(RoleEnum::WEB_USER),
+            'code' => RoleEnum::WEB_USER,
         ]);
     }
 
     public function mobileUser()
     {
         return $this->state([
-            'name' => 'Mobile一般ユーザー',
-            'code' => 'MOBILE_USER',
+            'name' => RoleEnum::getDescription(RoleEnum::MOBILE_USER),
+            'code' => RoleEnum::MOBILE_USER,
         ]);
     }
 }
