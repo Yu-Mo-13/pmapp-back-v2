@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\SupabaseAuthService;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -26,18 +27,18 @@ class LoginController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
+        $isExist = User::where('email', $email)
+            ->whereNull('deleted_at')
+            ->exists();
+
+        if (!$isExist) {
+            \Log::info('ユーザーが見つかりませんでした。');
+            return ApiResponseFormatter::unprocessible('ログインに失敗しました。');
+        }
+
         try {
             // Supabaseで認証
             $authResult = $this->supabaseAuth->signIn($email, $password);
-
-            // ローカルユーザーとの同期
-            $localUser = $this->syncUserWithDatabase($authResult['user']);
-
-            if (!$localUser) {
-                return ApiResponseFormatter::internalServerError('User synchronization failed');
-            }
-
-            \Log::info('Login successful', ['user_id' => $localUser->id]);
 
             return ApiResponseFormatter::ok([
                 'access_token' => $authResult['access_token'],
@@ -45,39 +46,7 @@ class LoginController extends Controller
 
         } catch (Exception $e) {
             info("Login failed for user: $email - " . $e->getMessage());
-            return ApiResponseFormatter::unauthorized('Invalid email or password');
+            return ApiResponseFormatter::unprocessible('ログインに失敗しました。');
         }
-    }
-
-    /**
-     * Sync Supabase user with local database
-     *
-     * @param array $supabaseUser
-     * @return User|null
-     */
-    private function syncUserWithDatabase(array $supabaseUser): ?User
-    {
-        $email = $supabaseUser['email'] ?? null;
-
-        if (!$email) {
-            return null;
-        }
-
-        $user = User::with('role')->where('email', $email)->first();
-
-        if (!$user) {
-            // デフォルトロールを取得（WEB_USERを仮定）
-            $defaultRoleId = \App\Models\Role::where('code', 'WEB_USER')->first()?->id ?? 1;
-
-            $user = User::create([
-                'name' => $supabaseUser['user_metadata']['name'] ?? $supabaseUser['email'],
-                'email' => $email,
-                'role_id' => $defaultRoleId,
-            ]);
-
-            $user->load('role');
-        }
-
-        return $user;
     }
 }
