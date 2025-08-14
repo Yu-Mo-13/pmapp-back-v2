@@ -11,7 +11,7 @@ provider:
     LOG_CHANNEL: stderr
     LOG_LEVEL: info
 
-    APP_KEY: ${ssm:/pmapp/${self:provider.stage}/APP_KEY~true}
+    APP_KEY: ${ssm:/pmapp-${self:provider.stage}/APP_KEY~true}
 
     # Supabase
     SUPABASE_URL: ${env:SUPABASE_URL}
@@ -20,11 +20,11 @@ provider:
 
     # DB (PostgreSQL)
     DB_CONNECTION: pgsql
-    DB_HOST: ${ssm:/pmapp/${self:provider.stage}/DB_HOST}
+    DB_HOST: ${ssm:/pmapp-${self:provider.stage}/DB_HOST}
     DB_PORT: 5432
-    DB_DATABASE: ${ssm:/pmapp/${self:provider.stage}/DB_DATABASE}
-    DB_USERNAME: ${ssm:/pmapp/${self:provider.stage}/DB_USERNAME}
-    DB_PASSWORD: ${ssm:/pmapp/${self:provider.stage}/DB_PASSWORD~true}
+    DB_DATABASE: ${ssm:/pmapp-${self:provider.stage}/DB_DATABASE}
+    DB_USERNAME: ${ssm:/pmapp-${self:provider.stage}/DB_USERNAME}
+    DB_PASSWORD: ${ssm:/pmapp-${self:provider.stage}/DB_PASSWORD~true}
 
     # セッション/キャッシュ（Lambda用）
     CACHE_DRIVER: array
