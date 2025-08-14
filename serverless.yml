@@ -1,0 +1,95 @@
+service: pmapp-laravel-api
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  stage: ${opt:stage, 'develop'}
+  architecture: x86_64
+  environment:
+    # Laravel
+    APP_ENV: self
+    LOG_CHANNEL: stderr
+    LOG_LEVEL: info
+
+    APP_KEY: ${ssm:/pmapp/${self:provider.stage}/APP_KEY~true}
+
+    # Supabase
+    SUPABASE_URL: ${env:SUPABASE_URL}
+    SUPABASE_ANON_KEY: ${env:SUPABASE_ANON_KEY}
+    SUPABASE_SERVICE_ROLE_KEY: ${env:SUPABASE_SERVICE_ROLE_KEY}
+
+    # DB (PostgreSQL)
+    DB_CONNECTION: pgsql
+    DB_HOST: ${ssm:/pmapp/${self:provider.stage}/DB_HOST}
+    DB_PORT: 5432
+    DB_DATABASE: ${ssm:/pmapp/${self:provider.stage}/DB_DATABASE}
+    DB_USERNAME: ${ssm:/pmapp/${self:provider.stage}/DB_USERNAME}
+    DB_PASSWORD: ${ssm:/pmapp/${self:provider.stage}/DB_PASSWORD~true}
+
+    # セッション/キャッシュ（Lambda用）
+    CACHE_DRIVER: array
+    SESSION_DRIVER: array
+    FILESYSTEM_DRIVER: s3
+
+    # AWS
+    AWS_BUCKET: ${self:service}-${self:provider.stage}-storage
+
+    # Bref
+    BREF_BINARY_RESPONSES: 1
+
+functions:
+  # Web (FPM)
+  web:
+    handler: public/index.php
+    runtime: php-82-fpm
+    timeout: 28
+    layers:
+      # ランタイムのlayerは不要。pdo_pgsqlだけを追加
+      - arn:aws:lambda:ap-northeast-1:534081306603:layer:php-82-fpm:102
+    events:
+      - httpApi: '*'
+    environment:
+      APP_KEY: ${env:APP_KEY}
+      APP_URL: !Sub 'https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com'
+
+  # Artisan (CLI)
+  artisan:
+    handler: artisan
+    runtime: php-82
+    timeout: 120
+    layers:
+      - ${bref:layer.console}
+      - arn:aws:lambda:ap-northeast-1:534081306603:layer:php-82-fpm:102
+    environment:
+      APP_KEY: ${env:APP_KEY}
+
+resources:
+  Resources:
+    StorageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.AWS_BUCKET}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+
+plugins:
+  - ./vendor/bref/bref
+  - ./vendor/bref/extra-php-extensions
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!tests/**'
+    - '!storage/logs/**'
+    - '!.env*'
+    - '!docker/**'
+    - '!docker-compose.yml'
+    - '!Dockerfile'
+    - '!*.md'
+    - '!phpcs.xml'
+    - '!phpstan.neon'
+    - '!phpunit.xml'
+    - 'php/conf.d/**'

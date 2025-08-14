@@ -7,6 +7,9 @@
     "require": {
         "php": "^7.3|^8.0",
         "bensampo/laravel-enum": "^4.2",
+        "bref/bref": "^2",
+        "bref/extra-php-extensions": "^1",
+        "bref/laravel-bridge": "^1.2",
         "firebase/php-jwt": "^6.11",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
