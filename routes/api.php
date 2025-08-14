@@ -16,4 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v2')->group(function () {
     require base_path('routes/api/v2/auth.php');
     require base_path('routes/api/v2/application.php');
+    Route::get('check', function () {
+        return response()->json(['status' => 'ok']);
+    });
 });
