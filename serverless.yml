@@ -3,13 +3,15 @@ service: pmapp-laravel-api
 provider:
   name: aws
   region: ap-northeast-1
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'develop'}
   architecture: x86_64
   environment:
     # Laravel
-    APP_ENV: production
+    APP_ENV: self
     LOG_CHANNEL: stderr
     LOG_LEVEL: info
+
+    APP_KEY: ${ssm:/pmapp/${self:provider.stage}/APP_KEY~true}
 
     # Supabase
     SUPABASE_URL: ${env:SUPABASE_URL}
@@ -18,11 +20,11 @@ provider:
 
     # DB (PostgreSQL)
     DB_CONNECTION: pgsql
-    DB_HOST: ${env:DB_HOST}
+    DB_HOST: ${ssm:/pmapp/${self:provider.stage}/DB_HOST}
     DB_PORT: 5432
-    DB_DATABASE: ${env:DB_DATABASE}
-    DB_USERNAME: ${env:DB_USERNAME}
-    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_DATABASE: ${ssm:/pmapp/${self:provider.stage}/DB_DATABASE}
+    DB_USERNAME: ${ssm:/pmapp/${self:provider.stage}/DB_USERNAME}
+    DB_PASSWORD: ${ssm:/pmapp/${self:provider.stage}/DB_PASSWORD~true}
 
     # セッション/キャッシュ（Lambda用）
     CACHE_DRIVER: array
@@ -90,3 +92,4 @@ package:
     - '!phpcs.xml'
     - '!phpstan.neon'
     - '!phpunit.xml'
+    - 'php/conf.d/**'

@@ -1,0 +1,62 @@
+name: Deploy (develop)
+
+on:
+  push:
+    branches: [ "develop" ]   # developブランチに合わせて変更
+  # PRマージ時だけにしたい場合は以下で代替
+  # pull_request:
+  #   types: [closed]
+  #   branches: [ "develop" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write   # OIDC 必須
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"        # Bref/プロジェクトに合わせて
+          extensions: mbstring, intl, openssl, sodium
+          tools: composer
+
+      - name: Install npm deps
+        run: npm ci
+
+      - name: Install composer deps (prod)
+        run: composer install --no-dev --optimize-autoloader --prefer-dist
+
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install Serverless
+        run: npm i -g serverless@3
+
+      # 必要なら .env をここで作る or 環境変数で渡す
+      # - name: Create .env
+      #   run: |
+      #     echo "APP_ENV=production" >> .env
+
+      - name: Deploy (serverless)
+        env:
+          SLS_STAGE: develop
+          SLS_REGION: ${{ secrets.AWS_REGION }}
+        run: serverless deploy --stage $SLS_STAGE --region $SLS_REGION
+
+      # 動作確認用（任意）
+      # - run: aws sts get-caller-identity
