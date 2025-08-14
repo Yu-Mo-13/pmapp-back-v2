@@ -43,7 +43,7 @@ functions:
     timeout: 28
     layers:
       # ランタイムのlayerは不要。pdo_pgsqlだけを追加
-      - ${bref-extra:pgsql-php-82}
+      - arn:aws:lambda:ap-northeast-1:534081306603:layer:php-82-fpm:102
     events:
       - httpApi: '*'
     environment:
@@ -57,7 +57,7 @@ functions:
     timeout: 120
     layers:
       - ${bref:layer.console}
-      - ${bref-extra:pgsql-php-82}
+      - arn:aws:lambda:ap-northeast-1:534081306603:layer:php-82-fpm:102
     environment:
       APP_KEY: ${env:APP_KEY}
 
