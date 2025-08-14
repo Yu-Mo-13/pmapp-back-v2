@@ -43,9 +43,6 @@ functions:
     handler: public/index.php
     runtime: php-82-fpm
     timeout: 28
-    layers:
-      # ランタイムのlayerは不要。pdo_pgsqlだけを追加
-      - arn:aws:lambda:ap-northeast-1:534081306603:layer:php-82-fpm:102
     events:
       - httpApi: '*'
     environment:
