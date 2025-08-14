@@ -26,3 +26,4 @@ _ide_helper_models.php
 
 # Lambda環境変数ファイル
 .env.lambda
+.env.dev
