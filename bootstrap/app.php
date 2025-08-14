@@ -15,6 +15,12 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+// Lambda環境用の設定
+if (isset($_ENV['LAMBDA_RUNTIME_API'])) {
+    // Lambda環境でのストレージパス設定
+    $app->useStoragePath('/tmp');
+}
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
