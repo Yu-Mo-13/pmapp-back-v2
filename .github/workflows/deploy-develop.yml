@@ -56,6 +56,10 @@ jobs:
         env:
           SLS_STAGE: develop
           SLS_REGION: ${{ secrets.AWS_REGION }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          APP_KEY: ${{ secrets.APP_KEY }}
         run: serverless deploy --stage $SLS_STAGE --region $SLS_REGION
 
       # 動作確認用（任意）

@@ -2,10 +2,10 @@ name: Code Quality & Review
 
 on:
   push:
-    branches: [ main ]
+    branches: [ develop ]
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [ main, develop ]
+    branches: [ develop ]
 
 jobs:
   code-quality:
@@ -129,7 +129,7 @@ jobs:
       run: |
         echo "## 📊 Code Quality Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        
+
         if [ "${{ github.event_name }}" = "push" ]; then
           echo "### Push to \`${{ github.ref_name }}\` - Full Analysis" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Full PHPCS code style check completed" >> $GITHUB_STEP_SUMMARY
@@ -140,7 +140,7 @@ jobs:
           echo "- ✅ PHPStan analysis with ReviewDog integration" >> $GITHUB_STEP_SUMMARY
           echo "- 💬 Check PR comments for detailed feedback" >> $GITHUB_STEP_SUMMARY
         fi
-        
+
         echo "- 🔐 Security audit completed" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
