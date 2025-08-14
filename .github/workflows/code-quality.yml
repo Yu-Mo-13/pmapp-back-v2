@@ -1,11 +1,11 @@
 name: Code Quality & Review
 
 on:
-  push:
-    branches: [ develop ]
+  # push:
+  #   branches: [ develop ]
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [ develop ]
+    branches: [ '**' ]
 
 jobs:
   code-quality:
