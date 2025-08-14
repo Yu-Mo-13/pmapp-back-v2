@@ -4,10 +4,9 @@ namespace App\Helpers;
 
 class ApiResponseFormatter
 {
-    public static function ok(array $data = [], $message = 'Ok')
+    public static function ok(array $data = [])
     {
         return response()->json([
-            'message' => $message,
             'data' => $data
         ]);
     }
