@@ -162,7 +162,7 @@ return [
         'application' => [
             'name' => 'アプリケーション名',
             'account_class' => 'アカウント区分',
-            'notice_class' => '通知区分',
+            'notice_class' => '定期通知区分',
             'mark_class' => '記号区分',
             'pre_password_size' => '仮登録パスワード桁数',
         ]
