@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Application;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\ApiResponseFormatter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ApplicationCreateRequest;
+use App\Http\Requests\Application\ApplicationCreateRequest;
 use App\Models\Application;
 
 class ApplicationCreateController extends Controller
