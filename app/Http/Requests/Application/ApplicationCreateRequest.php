@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Enums\Application\ApplicationAccountClassEnum;
+use App\Http\Enums\Application\ApplicationNoticeClassEnum;
+use App\Http\Enums\Application\ApplicationMarkClassEnum;
 
 class ApplicationCreateRequest extends FormRequest
 {
@@ -25,10 +28,10 @@ class ApplicationCreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'account_class' => 'required|integer',
-            'notice_class' => 'required|integer',
-            'mark_class' => 'required|integer',
-            'pre_password_size' => 'required|integer|min:8|max:64',
+            'account_class' => 'required|string|in:' . implode(',', array_values(ApplicationAccountClassEnum::getValues())),
+            'notice_class' => 'required|string|in:' . implode(',', array_values(ApplicationNoticeClassEnum::getValues())),
+            'mark_class' => 'required|string|in:' . implode(',', array_values(ApplicationMarkClassEnum::getValues())),
+            'pre_password_size' => 'required|integer|min:1',
         ];
     }
 }
