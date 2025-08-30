@@ -27,11 +27,11 @@ class ApplicationCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'account_class' => 'required|string|in:' . implode(',', array_values(ApplicationAccountClassEnum::getValues())),
-            'notice_class' => 'required|string|in:' . implode(',', array_values(ApplicationNoticeClassEnum::getValues())),
-            'mark_class' => 'required|string|in:' . implode(',', array_values(ApplicationMarkClassEnum::getValues())),
-            'pre_password_size' => 'required|integer|min:1',
+            'application.name' => 'required|string|max:255|unique:applications,name',
+            'application.account_class' => 'required|boolean',
+            'application.notice_class' => 'required|boolean',
+            'application.mark_class' => 'required|boolean',
+            'application.pre_password_size' => 'required|integer|min:1',
         ];
     }
 }
