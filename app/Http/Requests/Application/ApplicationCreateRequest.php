@@ -3,9 +3,6 @@
 namespace App\Http\Requests\Application;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Enums\Application\ApplicationAccountClassEnum;
-use App\Http\Enums\Application\ApplicationNoticeClassEnum;
-use App\Http\Enums\Application\ApplicationMarkClassEnum;
 
 class ApplicationCreateRequest extends FormRequest
 {
