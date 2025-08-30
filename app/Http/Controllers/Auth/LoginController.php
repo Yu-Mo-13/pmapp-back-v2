@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\ApiResponseFormatter;
 use App\Http\Controllers\Controller;
-use App\Http\Request\LoginRequest;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Services\SupabaseAuthService;
 use Exception;
