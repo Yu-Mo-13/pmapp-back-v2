@@ -100,8 +100,12 @@ class Handler extends ExceptionHandler
             return ApiResponseFormatter::forbidden($exception->getMessage() ?: 'Forbidden');
         }
 
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return ApiResponseFormatter::notFound('The specified resource was not found');
+        }
+
         if ($exception instanceof NotFoundHttpException) {
-            return ApiResponseFormatter::notfound($exception->getMessage() ?: 'Not Found');
+            return ApiResponseFormatter::notFound($exception->getMessage() ?: 'Not Found');
         }
 
         return ApiResponseFormatter::internalServerError('Internal Server Error');
