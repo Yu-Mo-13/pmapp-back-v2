@@ -85,7 +85,6 @@ class Handler extends ExceptionHandler
      */
     private function handleApiException(Throwable $exception)
     {
-        info($exception);
         if ($exception instanceof ValidationException) {
             return response()->json([
                 'message' => $exception->getMessage(),
