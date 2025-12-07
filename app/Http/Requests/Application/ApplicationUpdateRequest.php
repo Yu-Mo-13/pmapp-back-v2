@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Application;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApplicationUpdateRequest extends FormRequest
 {
@@ -23,8 +24,15 @@ class ApplicationUpdateRequest extends FormRequest
      */
     public function rules()
     {
+        $application = $this->route('application');
+
         return [
-            'application.name' => 'required|string|max:255|unique:applications,name',
+            'application.name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('applications', 'name')->ignore($application, 'id'),
+            ],
             'application.account_class' => 'required|boolean',
             'application.notice_class' => 'required|boolean',
             'application.mark_class' => 'required|boolean',
