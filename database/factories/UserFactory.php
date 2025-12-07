@@ -14,16 +14,23 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $roles = Role::all()->pluck('id')->toArray();
-        if (empty($roles)) {
-            // デフォルトのロールが存在しない場合は、ロールファクトリを使用して作成
-            throw new \Exception('No roles found. Please create roles before creating users.');
-        }
-
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'role_id' => $this->faker->randomElement($roles),
+            'role_id' => function () {
+                // ロールが存在しない場合は作成する
+                return Role::factory()->create()->id;
+            },
         ];
+    }
+
+    /**
+     * 特定のロールでユーザーを作成する
+     */
+    public function withRole($roleId)
+    {
+        return $this->state([
+            'role_id' => $roleId,
+        ]);
     }
 }

@@ -2,7 +2,14 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\ApiResponseFormatter;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -37,5 +44,70 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return $this->handleApiException($exception);
+        }
+
+        return parent::render($request, $exception);
+    }
+
+    /**
+     * Convert a validation exception into a JSON response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Validation\ValidationException  $exception
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json([
+            'message' => $exception->getMessage(),
+            'errors' => $exception->errors()
+        ], 422);
+    }
+
+    /**
+     * Handle API exceptions and return appropriate JSON responses.
+     *
+     * @param  \Throwable  $exception
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function handleApiException(Throwable $exception)
+    {
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'errors' => $exception->errors()
+            ], 422);
+        }
+
+        if ($exception instanceof AuthenticationException || $exception instanceof UnauthorizedHttpException) {
+            return ApiResponseFormatter::unauthorized($exception->getMessage() ?: 'Unauthorized');
+        }
+
+        if ($exception instanceof AccessDeniedHttpException) {
+            return ApiResponseFormatter::forbidden($exception->getMessage() ?: 'Forbidden');
+        }
+
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return ApiResponseFormatter::notFound('The specified resource was not found');
+        }
+
+        if ($exception instanceof NotFoundHttpException) {
+            return ApiResponseFormatter::notFound($exception->getMessage() ?: 'Not Found');
+        }
+
+        return ApiResponseFormatter::internalServerError('Internal Server Error');
     }
 }

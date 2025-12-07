@@ -6,9 +6,7 @@ class ApiResponseFormatter
 {
     public static function ok(array $data = [])
     {
-        return response()->json([
-            'data' => $data
-        ]);
+        return response()->json($data, 200);
     }
 
     public static function notfound(string $message = 'Not Found')
