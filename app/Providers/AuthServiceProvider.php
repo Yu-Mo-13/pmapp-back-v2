@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Auth\Guards\SupabaseGuard;
+use App\Services\SupabaseAuthService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,6 +28,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Auth::extend('supabase', function ($app, $name, array $config) {
+            return new SupabaseGuard(
+                Auth::createUserProvider($config['provider']),
+                $app->make('request'),
+                $app->make(SupabaseAuthService::class)
+            );
+        });
     }
 }
