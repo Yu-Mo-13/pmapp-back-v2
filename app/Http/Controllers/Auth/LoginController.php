@@ -27,6 +27,7 @@ class LoginController extends Controller
         $password = $request->input('password');
 
         $isExist = User::where('email', $email)
+            ->whereNotNull('uid')
             ->whereNull('deleted_at')
             ->exists();
 
