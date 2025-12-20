@@ -89,6 +89,7 @@ class SupabaseGuard implements Guard
         }
 
         // Try to find user by Supabase UID first
+        /** @var \App\Models\User|null $user */
         $user = $this->provider->retrieveByCredentials(['uid' => $uid]);
 
         if ($user) {
@@ -102,6 +103,7 @@ class SupabaseGuard implements Guard
         }
 
         /** @var User|null $user */
+        /** @var \App\Models\User|null $user */
         $user = $this->provider->retrieveByCredentials(['email' => $email]);
 
         // If user exists, update their UID
