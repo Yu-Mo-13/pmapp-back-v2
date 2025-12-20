@@ -5,6 +5,7 @@ namespace App\Auth\Guards;
 use App\Models\User;
 use App\Services\SupabaseAuthService;
 use Illuminate\Auth\GuardHelpers;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class SupabaseGuard implements Guard
      */
     public function user(): ?\Illuminate\Contracts\Auth\Authenticatable
     {
-        if (!is_null($this->user)) {
+        if ($this->user !== null) {
             return $this->user;
         }
 
@@ -80,7 +81,7 @@ class SupabaseGuard implements Guard
      * @param array $supabaseUser
      * @return User|null
      */
-    protected function syncUser(array $supabaseUser): ?User
+    protected function syncUser(array $supabaseUser): ?Authenticatable
     {
         $uid = $supabaseUser['id'] ?? null;
         if (!$uid) {
@@ -112,7 +113,7 @@ class SupabaseGuard implements Guard
 
         // If user does not exist at all, create them
         $defaultRoleId = \App\Models\Role::where('code', 'WEB_USER')->first()?->id;
-        if(!$defaultRoleId) {
+        if (!$defaultRoleId) {
             // Fallback or handle error if role not found
             $defaultRoleId = 1; // Or throw an exception
         }
