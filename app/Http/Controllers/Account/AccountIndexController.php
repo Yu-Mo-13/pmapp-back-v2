@@ -12,7 +12,10 @@ class AccountIndexController extends Controller
 {
     public function __invoke(): JsonResponse
     {
-        $accounts = Account::with('application')->orderBy('id')->get();
+        $accounts = Account::with('application')
+            ->whereHas('application', fn($query) => $query->where('account_class', true))
+            ->orderBy('id')
+            ->get();
         $transformAccounts = $this->transformAccounts($accounts);
         return ApiResponseFormatter::ok($transformAccounts);
     }
