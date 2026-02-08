@@ -12,6 +12,10 @@ class AccountUpdateController extends Controller
 {
     public function __invoke(AccountUpdateRequest $request, Account $account): JsonResponse
     {
+        if (!$account->application || !$account->application->account_class) {
+            return ApiResponseFormatter::notfound();
+        }
+
         $validated = $request->validated();
         $accountData = $validated['account'];
 
