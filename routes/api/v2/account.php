@@ -5,6 +5,7 @@ use App\Http\Controllers\Account\AccountIndexController;
 use App\Http\Controllers\Account\AccountCreateController;
 use App\Http\Controllers\Account\AccountApplicationIndexController;
 use App\Http\Controllers\Account\AccountShowController;
+use App\Http\Controllers\Account\AccountDeleteController;
 
 Route::prefix('/accounts')->group(function () {
     Route::middleware('auth:api')->group(function () {
@@ -16,5 +17,7 @@ Route::prefix('/accounts')->group(function () {
             ->name('accounts.applications');
         Route::post('/', AccountCreateController::class)
             ->name('accounts');
+        Route::delete('/{account}', AccountDeleteController::class)
+            ->name('account');
     });
 });
