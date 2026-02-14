@@ -9,5 +9,4 @@ Route::post('/login', LoginController::class)
     ->name('auth.login');
 
 Route::get('/login/status', LoginStatusController::class)
-    ->middleware('auth:api')
     ->name('auth.login.status');
