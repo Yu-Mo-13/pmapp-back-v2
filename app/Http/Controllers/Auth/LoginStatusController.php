@@ -29,6 +29,5 @@ class LoginStatusController extends Controller
                 'name' => 'ゲスト',
             ]);
         }
-
     }
 }
