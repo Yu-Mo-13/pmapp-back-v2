@@ -1,0 +1,3 @@
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp"
+env_http_headers = { Authorization = "GITHUB_PAT_BEARER" }
