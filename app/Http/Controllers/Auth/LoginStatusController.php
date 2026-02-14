@@ -18,10 +18,17 @@ class LoginStatusController extends Controller
      */
     public function __invoke(Request $request): JsonResponse
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
+            return ApiResponseFormatter::ok([
+                'name' => $user->name,
+            ]);
+        } catch (\Exception $e) {
+            info('Error fetching login status: ' . $e->getMessage());
+            return ApiResponseFormatter::ok([
+                'name' => 'ゲスト',
+            ]);
+        }
 
-        return ApiResponseFormatter::ok([
-            'name' => $user->name,
-        ]);
     }
 }
