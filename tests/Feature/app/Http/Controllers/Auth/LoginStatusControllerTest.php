@@ -15,7 +15,10 @@ class LoginStatusControllerTest extends PmappTestCase
         // Add header to indicate json request
         $response = $this->getJson(route('auth.login.status'));
 
-        $response->assertUnauthorized();
+        $response->assertOk()
+            ->assertJson([
+                'name' => 'ゲスト',
+            ]);
     }
 
     public function test_show_returns_user_info_for_authenticated_user()
