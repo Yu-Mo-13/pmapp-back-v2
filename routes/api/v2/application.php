@@ -20,5 +20,5 @@ Route::prefix('/applications')->group(function () {
             ->name('applications.update');
         Route::delete('/{application}', ApplicationDeleteController::class)
             ->name('applications.delete');
-        });
+    });
 });
