@@ -19,7 +19,8 @@ class ApplicationShowControllerTest extends PmappTestCase
      */
     public function test_レスポンス形式の確認()
     {
-        $response = $this->get(route('applications.show', ['application' => $this->markClassTrueApplication]));
+        $this->actingAs($this->adminUser, 'api');
+        $response = $this->getJson(route('applications.show', ['application' => $this->markClassTrueApplication]));
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'id',
@@ -33,7 +34,8 @@ class ApplicationShowControllerTest extends PmappTestCase
 
     public function test_テストデータがレスポンスに含まれていることを確認(): void
     {
-        $response = $this->get(route('applications.show', ['application' => $this->markClassTrueApplication]));
+        $this->actingAs($this->adminUser, 'api');
+        $response = $this->getJson(route('applications.show', ['application' => $this->markClassTrueApplication]));
         $response->assertStatus(200);
 
         $responseData = $response->json();
@@ -48,7 +50,14 @@ class ApplicationShowControllerTest extends PmappTestCase
     public function test_存在しないアプリケーションIDを指定した場合は404エラー(): void
     {
         $nonExistentId = 9999; // 存在しないIDを指定
-        $response = $this->get(route('applications.show', ['application' => $nonExistentId]));
+        $this->actingAs($this->adminUser, 'api');
+        $response = $this->getJson(route('applications.show', ['application' => $nonExistentId]));
         $response->assertStatus(404);
+    }
+
+    public function test_認証されていない場合は401エラー(): void
+    {
+        $response = $this->getJson(route('applications.show', ['application' => $this->markClassTrueApplication]));
+        $response->assertStatus(401);
     }
 }
