@@ -14,7 +14,8 @@ class ApplicationIndexControllerTest extends PmappTestCase
 
     public function test_レスポンス形式の確認()
     {
-        $response = $this->get(route('applications.index'));
+        $this->actingAs($this->adminUser, 'api');
+        $response = $this->getJson(route('applications.index'));
 
         $response->assertStatus(200);
 
@@ -53,7 +54,8 @@ class ApplicationIndexControllerTest extends PmappTestCase
 
     public function test_テストデータが全てレスポンスに含まれていることを確認(): void
     {
-        $response = $this->get(route('applications.index'));
+        $this->actingAs($this->adminUser, 'api');
+        $response = $this->getJson(route('applications.index'));
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('applications', [
@@ -79,5 +81,11 @@ class ApplicationIndexControllerTest extends PmappTestCase
             'notice_class' => true,
             'mark_class' => false,
         ]);
+    }
+
+    public function test_未ログインの場合、アプリケーションの一覧が取得できないこと()
+    {
+        $response = $this->getJson(route('applications.index'));
+        $response->assertStatus(401);
     }
 }
