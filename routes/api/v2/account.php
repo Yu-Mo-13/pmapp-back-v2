@@ -12,10 +12,10 @@ Route::prefix('/accounts')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::get('/', AccountIndexController::class)
             ->name('accounts');
-        Route::get('/{account}', AccountShowController::class)
-            ->name('account');
         Route::get('/applications', AccountApplicationIndexController::class)
             ->name('accounts.applications');
+        Route::get('/{account}', AccountShowController::class)
+            ->name('account');
         Route::post('/', AccountCreateController::class)
             ->name('accounts');
         Route::put('/{account}', AccountUpdateController::class)

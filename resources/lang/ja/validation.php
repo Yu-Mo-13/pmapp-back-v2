@@ -165,6 +165,11 @@ return [
             'notice_class' => '定期通知区分',
             'mark_class' => '記号区分',
             'pre_password_size' => '仮登録パスワード桁数',
+        ],
+        'account' => [
+            'name' => 'アカウント名',
+            'application_id' => 'アプリケーション',
+            'notice_class' => '定期通知区分',
         ]
     ],
 
