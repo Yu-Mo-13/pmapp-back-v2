@@ -30,6 +30,9 @@ class UnregistedPasswordDeleteAllControllerTest extends PmappTestCase
 
         $response = $this->deleteJson(route('unregisted-passwords.delete-all'));
         $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'All unregisted passwords deleted successfully.',
+        ]);
         $this->assertDatabaseCount('unregisted_passwords', 0);
     }
 

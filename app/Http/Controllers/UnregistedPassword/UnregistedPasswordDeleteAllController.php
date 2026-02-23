@@ -12,6 +12,8 @@ class UnregistedPasswordDeleteAllController extends Controller
     public function __invoke(): JsonResponse
     {
         UnregistedPassword::query()->delete();
-        return ApiResponseFormatter::ok();
+        return ApiResponseFormatter::ok([
+            'message' => 'All unregisted passwords deleted successfully.',
+        ]);
     }
 }
