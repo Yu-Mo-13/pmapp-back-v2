@@ -36,7 +36,6 @@ class UnregistedPasswordIndexControllerTest extends PmappTestCase
         $response->assertJsonStructure([
             '*' => [
                 'uuid',
-                'password',
                 'application' => ['id', 'name'],
                 'account' => ['id', 'name'],
                 'created_at',
@@ -46,6 +45,10 @@ class UnregistedPasswordIndexControllerTest extends PmappTestCase
         $response->assertJsonFragment([
             'uuid' => $this->unregistedPassword->uuid,
         ]);
+
+        $responseData = $response->json();
+        $this->assertNotEmpty($responseData);
+        $this->assertArrayNotHasKey('password', $responseData[0]);
     }
 
     public function test_未ログイン時は401になること(): void
