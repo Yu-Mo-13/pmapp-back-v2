@@ -19,6 +19,7 @@ Route::prefix('v2')->group(function () {
     require base_path('routes/api/v2/account.php');
     require base_path('routes/api/v2/menu.php');
     require base_path('routes/api/v2/unregisted_password.php');
+    require base_path('routes/api/v2/preregisted_password.php');
     Route::get('check', function () {
         return response()->json(['status' => 'ok']);
     });

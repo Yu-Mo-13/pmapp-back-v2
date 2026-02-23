@@ -18,7 +18,6 @@ class UnregistedPasswordIndexController extends Controller
         $response = $unregistedPasswords->map(function ($unregistedPassword) {
             return [
                 'uuid' => $unregistedPassword->uuid,
-                'password' => $unregistedPassword->password,
                 'application' => $unregistedPassword->application ? [
                     'id' => $unregistedPassword->application->id,
                     'name' => $unregistedPassword->application->name,
