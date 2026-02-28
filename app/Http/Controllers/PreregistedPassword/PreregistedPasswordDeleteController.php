@@ -13,8 +13,6 @@ class PreregistedPasswordDeleteController extends Controller
     {
         $preregistedPassword->delete();
 
-        return ApiResponseFormatter::ok([
-            'message' => 'Preregisted password deleted successfully.',
-        ]);
+        return ApiResponseFormatter::ok();
     }
 }

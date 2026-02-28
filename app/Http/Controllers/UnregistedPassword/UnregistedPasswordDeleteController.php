@@ -13,8 +13,6 @@ class UnregistedPasswordDeleteController extends Controller
     {
         $unregistedPassword->delete();
 
-        return ApiResponseFormatter::ok([
-            'message' => 'Unregisted password deleted successfully.',
-        ]);
+        return ApiResponseFormatter::ok();
     }
 }
