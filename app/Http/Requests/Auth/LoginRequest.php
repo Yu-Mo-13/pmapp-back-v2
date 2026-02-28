@@ -26,4 +26,16 @@ class LoginRequest extends FormRequest
             'password' => 'required|string|max:64',
         ];
     }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'password' => 'パスワード',
+        ];
+    }
 }

@@ -158,7 +158,11 @@ return [
 
     'attributes' => [
         'email' => 'メールアドレス',
-        'password' => 'パスワード',
+        'password' => [
+            'password' => 'パスワード',
+            'application_id' => 'アプリケーション',
+            'account_id' => 'アカウント',
+        ],
         'application' => [
             'name' => 'アプリケーション名',
             'account_class' => 'アカウント区分',
