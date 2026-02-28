@@ -36,9 +36,7 @@ class PreregistedPasswordDeleteControllerTest extends PmappTestCase
         ]));
 
         $response->assertStatus(200);
-        $response->assertJson([
-            'message' => 'Preregisted password deleted successfully.',
-        ]);
+        $response->assertJson([]);
         $this->assertDatabaseMissing('preregisted_passwords', [
             'uuid' => $this->preregistedPassword->uuid,
         ]);

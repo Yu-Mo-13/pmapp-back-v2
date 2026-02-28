@@ -36,9 +36,7 @@ class UnregistedPasswordDeleteControllerTest extends PmappTestCase
         ]));
 
         $response->assertStatus(200);
-        $response->assertJson([
-            'message' => 'Unregisted password deleted successfully.',
-        ]);
+        $response->assertJson([]);
         $this->assertDatabaseMissing('unregisted_passwords', [
             'uuid' => $this->unregistedPassword->uuid,
         ]);
