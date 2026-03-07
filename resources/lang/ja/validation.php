@@ -176,6 +176,7 @@ return [
             'notice_class' => '定期通知区分',
         ],
         'application_id' => 'アプリケーション',
+        'account_id' => 'アカウント',
     ],
 
 ];

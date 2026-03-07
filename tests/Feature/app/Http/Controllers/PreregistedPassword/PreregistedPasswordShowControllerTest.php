@@ -46,6 +46,9 @@ class PreregistedPasswordShowControllerTest extends PmappTestCase
         $response->assertJsonFragment([
             'uuid' => $this->preregistedPassword->uuid,
         ]);
+        $response->assertJsonFragment([
+            'password' => 'plain-password',
+        ]);
     }
 
     public function test_未ログイン時は401になること(): void
