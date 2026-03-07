@@ -5,7 +5,7 @@ namespace Tests\Feature\app\Http\Controllers\Password;
 use App\Models\Account;
 use App\Models\Application;
 use App\Models\Password;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use Tests\PmappTestCase;
 
 class PasswordCreateControllerTest extends PmappTestCase
@@ -51,8 +51,10 @@ class PasswordCreateControllerTest extends PmappTestCase
             ->first();
 
         $this->assertNotNull($createdPassword);
-        $this->assertNotEquals('my-test-password', $createdPassword->password);
-        $this->assertTrue(Hash::check('my-test-password', $createdPassword->password));
+        $this->assertEquals('my-test-password', $createdPassword->password);
+        $encryptedPassword = $createdPassword->getRawOriginal('password');
+        $this->assertNotEquals('my-test-password', $encryptedPassword);
+        $this->assertEquals('my-test-password', Crypt::decryptString($encryptedPassword));
     }
 
     public function test_未ログインの場合は401エラーになること(): void
