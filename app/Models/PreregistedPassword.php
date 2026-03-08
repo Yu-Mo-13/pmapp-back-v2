@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
 class PreregistedPassword extends Model
@@ -40,12 +41,27 @@ class PreregistedPassword extends Model
             return;
         }
 
-        if (Str::startsWith($value, '$2y$')) {
+        try {
+            Crypt::decryptString($value);
             $this->attributes['password'] = $value;
             return;
+        } catch (DecryptException $e) {
         }
 
-        $this->attributes['password'] = Hash::make($value);
+        $this->attributes['password'] = Crypt::encryptString($value);
+    }
+
+    public function getPasswordAttribute($value)
+    {
+        if (empty($value)) {
+            return $value;
+        }
+
+        try {
+            return Crypt::decryptString($value);
+        } catch (DecryptException $e) {
+            return $value;
+        }
     }
 
     public function application()

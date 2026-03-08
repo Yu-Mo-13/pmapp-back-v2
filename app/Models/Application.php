@@ -44,4 +44,9 @@ class Application extends Model
         'mark_class',
         'pre_password_size',
     ];
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
 }
