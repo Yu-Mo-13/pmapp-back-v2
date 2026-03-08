@@ -11,7 +11,7 @@ class PasswordIndexService
 {
     /**
      * @return array{
-     *     applications:EloquentCollection<int, Application>,
+     *     applications:EloquentCollection<Application>,
      *     latest_updated_at_by_application_and_account:Collection<string, mixed>,
      *     latest_updated_at_by_application:Collection<int, mixed>
      * }
