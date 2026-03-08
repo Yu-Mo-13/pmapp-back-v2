@@ -14,13 +14,26 @@ class PasswordCreateControllerTest extends PmappTestCase
 
     private Account $account;
 
+    private Application $accountClassFalseApplication;
+
+    private Account $accountClassFalseApplicationAccount;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->application = Application::factory()->create();
+        $this->application = Application::factory()->create([
+            'account_class' => true,
+        ]);
         $this->account = Account::factory()->create([
             'application_id' => $this->application->id,
+        ]);
+
+        $this->accountClassFalseApplication = Application::factory()->create([
+            'account_class' => false,
+        ]);
+        $this->accountClassFalseApplicationAccount = Account::factory()->create([
+            'application_id' => $this->accountClassFalseApplication->id,
         ]);
     }
 
@@ -157,6 +170,40 @@ class PasswordCreateControllerTest extends PmappTestCase
                 'password' => 'my-test-password',
                 'application_id' => $this->application->id,
                 'account_id' => $otherAccount->id,
+            ],
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['password.account_id']);
+    }
+
+    public function test_account_class_falseアプリではaccount_id未指定で作成できること(): void
+    {
+        $this->actingAs($this->adminUser, 'api');
+
+        $response = $this->postJson(route('passwords.create'), [
+            'password' => [
+                'password' => 'my-test-password',
+                'application_id' => $this->accountClassFalseApplication->id,
+            ],
+        ]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas('passwords', [
+            'application_id' => $this->accountClassFalseApplication->id,
+            'account_id' => null,
+        ]);
+    }
+
+    public function test_account_class_falseアプリではaccount_id指定時は422エラーになること(): void
+    {
+        $this->actingAs($this->adminUser, 'api');
+
+        $response = $this->postJson(route('passwords.create'), [
+            'password' => [
+                'password' => 'my-test-password',
+                'application_id' => $this->accountClassFalseApplication->id,
+                'account_id' => $this->accountClassFalseApplicationAccount->id,
             ],
         ]);
 
