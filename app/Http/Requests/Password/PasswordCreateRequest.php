@@ -62,5 +62,4 @@ class PasswordCreateRequest extends FormRequest
             }
         });
     }
-
 }
