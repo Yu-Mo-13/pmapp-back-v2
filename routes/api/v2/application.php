@@ -7,6 +7,7 @@ use App\Http\Controllers\Application\ApplicationCreateController;
 use App\Http\Controllers\Application\ApplicationShowController;
 use App\Http\Controllers\Application\ApplicationUpdateController;
 use App\Http\Controllers\Application\ApplicationDeleteController;
+use App\Http\Controllers\Application\ApplicationAccountIndexController;
 
 Route::prefix('/applications')->group(function () {
     Route::middleware('auth:api')->group(function () {
@@ -16,6 +17,8 @@ Route::prefix('/applications')->group(function () {
             ->name('applications.create');
         Route::get('/{application}', ApplicationShowController::class)
             ->name('applications.show');
+        Route::get('/{application}/accounts', ApplicationAccountIndexController::class)
+            ->name('applications.accounts');
         Route::put('/{application}', ApplicationUpdateController::class)
             ->name('applications.update');
         Route::delete('/{application}', ApplicationDeleteController::class)
