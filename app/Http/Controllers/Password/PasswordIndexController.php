@@ -31,7 +31,9 @@ class PasswordIndexController extends Controller
         foreach ($applications as $application) {
             if ($application->account_class) {
                 foreach ($application->accounts->sortBy('id') as $account) {
-                    $latestUpdatedAt = $latestUpdatedAtByApplicationAndAccount->get(sprintf('%d:%d', $application->id, $account->id));
+                    $latestUpdatedAt = $latestUpdatedAtByApplicationAndAccount->get(
+                        sprintf('%d:%d', $application->id, $account->id)
+                    );
                     $response[] = [
                         'latest_updated_at' => $latestUpdatedAt ? Carbon::parse($latestUpdatedAt)->toISOString() : null,
                         'application' => [

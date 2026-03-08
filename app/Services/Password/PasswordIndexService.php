@@ -26,7 +26,9 @@ class PasswordIndexService
             ->groupBy('application_id', 'account_id')
             ->get()
             ->mapWithKeys(function ($password) {
-                return [sprintf('%d:%d', $password->application_id, $password->account_id) => $password->latest_updated_at];
+                return [
+                    sprintf('%d:%d', $password->application_id, $password->account_id) => $password->latest_updated_at,
+                ];
             });
 
         $latestUpdatedAtByApplication = Password::query()
