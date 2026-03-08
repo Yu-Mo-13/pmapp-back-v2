@@ -4,6 +4,8 @@ namespace Tests\Feature\app\Http\Controllers\Password;
 
 use App\Models\Account;
 use App\Models\Application;
+use App\Models\Password;
+use Illuminate\Support\Carbon;
 use Tests\PmappTestCase;
 
 class PasswordIndexControllerTest extends PmappTestCase
@@ -17,6 +19,12 @@ class PasswordIndexControllerTest extends PmappTestCase
     private Application $accountClassFalseApplication;
 
     private Application $deletedApplication;
+
+    private Carbon $account1LatestUpdatedAt;
+
+    private Carbon $account2LatestUpdatedAt;
+
+    private Carbon $accountClassFalseLatestUpdatedAt;
 
     protected function setUp(): void
     {
@@ -46,6 +54,44 @@ class PasswordIndexControllerTest extends PmappTestCase
             'account_class' => false,
         ]);
         $this->deletedApplication->delete();
+
+        $this->account1LatestUpdatedAt = Carbon::parse('2026-03-01 10:00:00');
+        Password::factory()->create([
+            'application_id' => $this->targetApplication->id,
+            'account_id' => $this->account1->id,
+            'updated_at' => Carbon::parse('2026-02-01 10:00:00'),
+        ]);
+        Password::factory()->create([
+            'application_id' => $this->targetApplication->id,
+            'account_id' => $this->account1->id,
+            'updated_at' => $this->account1LatestUpdatedAt,
+        ]);
+
+        $this->account2LatestUpdatedAt = Carbon::parse('2026-01-15 09:00:00');
+        Password::factory()->create([
+            'application_id' => $this->targetApplication->id,
+            'account_id' => $this->account2->id,
+            'updated_at' => $this->account2LatestUpdatedAt,
+        ]);
+
+        $this->accountClassFalseLatestUpdatedAt = Carbon::parse('2026-04-01 12:00:00');
+        $accountClassFalseAccount1 = Account::factory()->create([
+            'application_id' => $this->accountClassFalseApplication->id,
+        ]);
+        $accountClassFalseAccount2 = Account::factory()->create([
+            'application_id' => $this->accountClassFalseApplication->id,
+        ]);
+
+        Password::factory()->create([
+            'application_id' => $this->accountClassFalseApplication->id,
+            'account_id' => $accountClassFalseAccount1->id,
+            'updated_at' => Carbon::parse('2026-02-10 12:00:00'),
+        ]);
+        Password::factory()->create([
+            'application_id' => $this->accountClassFalseApplication->id,
+            'account_id' => $accountClassFalseAccount2->id,
+            'updated_at' => $this->accountClassFalseLatestUpdatedAt,
+        ]);
     }
 
     public function test_正常取得できること(): void
@@ -58,6 +104,7 @@ class PasswordIndexControllerTest extends PmappTestCase
         $response->assertJsonCount(3);
 
         $response->assertJsonFragment([
+            'latest_updated_at' => $this->account1LatestUpdatedAt->toISOString(),
             'application' => [
                 'id' => $this->targetApplication->id,
                 'name' => $this->targetApplication->name,
@@ -68,6 +115,7 @@ class PasswordIndexControllerTest extends PmappTestCase
             ],
         ]);
         $response->assertJsonFragment([
+            'latest_updated_at' => $this->account2LatestUpdatedAt->toISOString(),
             'application' => [
                 'id' => $this->targetApplication->id,
                 'name' => $this->targetApplication->name,
@@ -78,6 +126,7 @@ class PasswordIndexControllerTest extends PmappTestCase
             ],
         ]);
         $response->assertJsonFragment([
+            'latest_updated_at' => $this->accountClassFalseLatestUpdatedAt->toISOString(),
             'application' => [
                 'id' => $this->accountClassFalseApplication->id,
                 'name' => $this->accountClassFalseApplication->name,
