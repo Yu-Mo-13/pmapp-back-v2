@@ -21,6 +21,7 @@ Route::prefix('v2')->group(function () {
     require base_path('routes/api/v2/unregisted_password.php');
     require base_path('routes/api/v2/preregisted_password.php');
     require base_path('routes/api/v2/password.php');
+    require base_path('routes/api/v2/healthcheck.php');
     Route::get('check', function () {
         return response()->json(['status' => 'ok']);
     });
