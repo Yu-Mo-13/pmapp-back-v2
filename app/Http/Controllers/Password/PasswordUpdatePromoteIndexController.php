@@ -38,7 +38,8 @@ class PasswordUpdatePromoteIndexController extends Controller
         $latestPasswords = Password::query()
             ->selectRaw('application_id, MAX(created_at) as latest_created_at')
             ->whereNull('account_id')
-            ->groupBy('application_id');
+            ->groupBy('application_id')
+            ->toBase();
 
         return Application::query()
             ->joinSub($latestPasswords, 'latest_passwords', function ($join) {
@@ -67,7 +68,8 @@ class PasswordUpdatePromoteIndexController extends Controller
         $latestPasswords = Password::query()
             ->selectRaw('application_id, account_id, MAX(created_at) as latest_created_at')
             ->whereNotNull('account_id')
-            ->groupBy('application_id', 'account_id');
+            ->groupBy('application_id', 'account_id')
+            ->toBase();
 
         return Account::query()
             ->join('applications', 'applications.id', '=', 'accounts.application_id')
