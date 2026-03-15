@@ -56,6 +56,8 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'password_update_promote_months' => 6,
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
