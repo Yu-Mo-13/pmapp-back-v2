@@ -23,7 +23,7 @@ class OpenApiSpecificationShowControllerTest extends TestCase
         $response = $this->get('/docs/api');
 
         $response->assertOk()
-            ->assertSee('PMAPP API Docs')
+            ->assertSee(config('app.name') . ' API Docs')
             ->assertSee('swagger-ui')
             ->assertSee('/docs/openapi.json')
             ->assertSee('SwaggerUIBundle');
