@@ -54,7 +54,7 @@ class OpenApiSpecificationFactory
         $paths = [];
 
         /** @var Route $route */
-        foreach ($this->router->getRoutes() as $route) {
+        foreach ($this->router->getRoutes()->getRoutes() as $route) {
             if (!$this->isDocumentTarget($route)) {
                 continue;
             }
@@ -92,6 +92,7 @@ class OpenApiSpecificationFactory
             'summary' => $this->makeSummary($route),
             'operationId' => $this->makeOperationId($route, $method),
             'responses' => $this->buildResponses($route),
+            'tags' => [$this->resolveTag($route)],
         ];
 
         if ($this->requiresAuthentication($route)) {
@@ -100,11 +101,6 @@ class OpenApiSpecificationFactory
                     'bearerAuth' => [],
                 ],
             ];
-        }
-
-        $tag = $this->resolveTag($route);
-        if ($tag !== null) {
-            $operation['tags'] = [$tag];
         }
 
         $parameters = $this->buildParameters($route);
@@ -216,7 +212,7 @@ class OpenApiSpecificationFactory
         });
 
         $parameters = [];
-        foreach ($formRequest->rules() as $field => $rules) {
+        foreach ($this->resolveFormRequestRules($formRequest) as $field => $rules) {
             if (Str::contains($field, '.')) {
                 continue;
             }
@@ -250,6 +246,17 @@ class OpenApiSpecificationFactory
         }
 
         return $schema;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function resolveFormRequestRules(FormRequest $formRequest): array
+    {
+        /** @var array<string, mixed> $rules */
+        $rules = app()->call([$formRequest, 'rules']);
+
+        return $rules;
     }
 
     private function normalizeRules($rules): array
@@ -807,7 +814,7 @@ class OpenApiSpecificationFactory
         return $action;
     }
 
-    private function resolveTag(Route $route): ?string
+    private function resolveTag(Route $route): string
     {
         if (Str::startsWith($route->uri(), 'api/v2/accounts')) {
             return 'アカウント管理';
