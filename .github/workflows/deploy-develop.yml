@@ -41,7 +41,7 @@ jobs:
       - name: Run Migrations
         env:
           DB_CONNECTION: pgsql
-          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_HOST: ${{ secrets.DEV_DB_HOST }}
           DB_PORT: 5432
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
