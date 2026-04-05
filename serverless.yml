@@ -7,14 +7,12 @@ custom:
       appDebug: true
       logLevel: debug
       logRetentionInDays: 14
-      bucketVersioningStatus: Suspended
       bucketDeletionPolicy: Delete
     prod:
       appEnv: production
       appDebug: false
       logLevel: info
       logRetentionInDays: 90
-      bucketVersioningStatus: Enabled
       bucketDeletionPolicy: Retain
 
 provider:
@@ -102,8 +100,6 @@ resources:
       UpdateReplacePolicy: ${self:custom.stageConfig.${self:provider.stage}.bucketDeletionPolicy}
       Properties:
         BucketName: ${self:provider.environment.AWS_BUCKET}
-        VersioningConfiguration:
-          Status: ${self:custom.stageConfig.${self:provider.stage}.bucketVersioningStatus}
         BucketEncryption:
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:
