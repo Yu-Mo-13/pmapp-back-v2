@@ -124,6 +124,8 @@ Resources:
                   - logs:DeleteLogGroup
                   - logs:DescribeLogGroups
                   - logs:PutRetentionPolicy
+                  - logs:TagResource
+                  - logs:UntagResource
                   - events:DeleteRule
                   - events:DescribeRule
                   - events:ListTargetsByRule
