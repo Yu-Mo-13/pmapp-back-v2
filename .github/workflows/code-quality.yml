@@ -19,7 +19,7 @@ jobs:
       statuses: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: vendor
         key: ${{ runner.os }}-php-8.2-quality-${{ hashFiles('**/composer.lock') }}
@@ -60,7 +60,7 @@ jobs:
     - name: Get changed files (PR only)
       if: github.event_name == 'pull_request'
       id: changed-files
-      uses: tj-actions/changed-files@v44
+      uses: tj-actions/changed-files@v47
       with:
         files: |
           **/*.php
@@ -116,7 +116,7 @@ jobs:
     # === Results Summary ===
     - name: Upload Analysis Results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: code-quality-results-${{ github.run_number }}
         path: |

@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
 
@@ -44,13 +44,13 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PORT: 5432
           DB_DATABASE: ${{ secrets.DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
           DB_SSLMODE: require
         run: php artisan migrate --force
 
       - name: Configure AWS (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
@@ -67,10 +67,10 @@ jobs:
         env:
           SLS_STAGE: develop
           SLS_REGION: ${{ secrets.AWS_REGION }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          APP_KEY: ${{ secrets.APP_KEY }}
+          SUPABASE_URL: ${{ secrets.DEV_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.DEV_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.DEV_SUPABASE_SERVICE_ROLE_KEY }}
+          APP_KEY: ${{ secrets.DEV_APP_KEY }}
         run: serverless deploy --stage $SLS_STAGE --region $SLS_REGION
 
       # 動作確認用（任意）
