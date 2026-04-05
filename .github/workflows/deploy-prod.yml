@@ -1,0 +1,66 @@
+name: Deploy (prod)
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, intl, openssl, sodium
+          tools: composer
+
+      - name: Install npm deps
+        run: npm ci
+
+      - name: Install composer deps (prod)
+        run: composer install --no-dev --optimize-autoloader --prefer-dist
+
+      - name: Run Migrations
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: 5432
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_SSLMODE: require
+        run: php artisan migrate --force
+
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install Serverless
+        run: npm i -g serverless@3
+
+      - name: Deploy (serverless)
+        env:
+          SLS_STAGE: prod
+          SLS_REGION: ${{ secrets.AWS_REGION }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          APP_KEY: ${{ secrets.APP_KEY }}
+        run: serverless deploy --stage $SLS_STAGE --region $SLS_REGION
