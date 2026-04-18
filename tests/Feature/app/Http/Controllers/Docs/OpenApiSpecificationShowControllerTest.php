@@ -53,6 +53,14 @@ class OpenApiSpecificationShowControllerTest extends TestCase
             $specification['paths']['/api/v2/login']['post']['responses']['422']['content']['application/json']['schema']['$ref']
         );
         $this->assertSame(
+            'string',
+            $specification['components']['schemas']['LoginResponse']['properties']['top_page_url']['type']
+        );
+        $this->assertContains(
+            'top_page_url',
+            $specification['components']['schemas']['LoginResponse']['required']
+        );
+        $this->assertSame(
             '#/components/schemas/UnauthorizedResponse',
             $specification['paths']['/api/v2/accounts']['get']['responses']['401']['content']['application/json']['schema']['$ref']
         );

@@ -16,6 +16,9 @@ class LoginControllerTest extends PmappTestCase
             'email' => 'login-success@example.com',
             'uid' => 'uid-success',
         ]);
+        $user->role->update([
+            'top_page_url' => '/passwords',
+        ]);
 
         $mock = Mockery::mock(SupabaseAuthService::class);
         $mock->shouldReceive('signIn')
@@ -34,6 +37,7 @@ class LoginControllerTest extends PmappTestCase
         $response->assertOk();
         $response->assertJson([
             'access_token' => 'test-token',
+            'top_page_url' => '/passwords',
         ]);
     }
 
