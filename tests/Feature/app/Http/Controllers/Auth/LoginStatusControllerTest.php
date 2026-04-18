@@ -18,6 +18,7 @@ class LoginStatusControllerTest extends PmappTestCase
         $response->assertOk()
             ->assertJson([
                 'name' => 'ゲスト',
+                'role' => null,
             ]);
     }
 
@@ -31,6 +32,9 @@ class LoginStatusControllerTest extends PmappTestCase
         $response->assertOk()
             ->assertJson([
                 'name' => $user->name,
+                'role' => [
+                    'code' => $user->role->code,
+                ],
             ]);
     }
 
@@ -44,6 +48,9 @@ class LoginStatusControllerTest extends PmappTestCase
         $response->assertOk()
             ->assertJson([
                 'name' => $user->name,
+                'role' => [
+                    'code' => $user->role->code,
+                ],
             ]);
     }
 }

@@ -22,11 +22,15 @@ class LoginStatusController extends Controller
             $user = Auth::user();
             return ApiResponseFormatter::ok([
                 'name' => $user->name,
+                'role' => [
+                    'code' => $user->role?->code,
+                ],
             ]);
         } catch (\Exception $e) {
             info('Error fetching login status: ' . $e->getMessage());
             return ApiResponseFormatter::ok([
                 'name' => 'ゲスト',
+                'role' => null,
             ]);
         }
     }

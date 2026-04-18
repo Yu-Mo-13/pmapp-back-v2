@@ -338,8 +338,16 @@ class OpenApiSpecificationFactory
                 'type' => 'object',
                 'properties' => [
                     'name' => ['type' => 'string'],
+                    'role' => [
+                        'type' => 'object',
+                        'nullable' => true,
+                        'properties' => [
+                            'code' => ['type' => 'string'],
+                        ],
+                        'required' => ['code'],
+                    ],
                 ],
-                'required' => ['name'],
+                'required' => ['name', 'role'],
             ],
             'ApplicationResponse' => [
                 'type' => 'object',
