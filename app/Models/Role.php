@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name ロール名
  * @property string $code ロールコード
- * @property string|null $top_page_url トップページURL
+ * @property string $top_page_url トップページURL
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Database\Factories\RoleFactory factory(...$parameters)

@@ -43,7 +43,7 @@ class LoginController extends Controller
 
             return ApiResponseFormatter::ok([
                 'access_token' => $authResult['access_token'],
-                'top_page_url' => $user->role?->top_page_url,
+                'top_page_url' => $user->role->top_page_url,
             ]);
         } catch (Exception $e) {
             info("Login failed for user: $email - " . $e->getMessage());
