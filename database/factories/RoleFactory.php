@@ -17,6 +17,7 @@ class RoleFactory extends Factory
         return [
             'name' => $this->faker->word,
             'code' => $this->faker->unique()->word,
+            'top_page_url' => '/passwords',
         ];
     }
 
@@ -25,6 +26,7 @@ class RoleFactory extends Factory
         return $this->state([
             'name' => RoleEnum::getDescription(RoleEnum::ADMIN),
             'code' => RoleEnum::ADMIN,
+            'top_page_url' => '/applications',
         ]);
     }
 
@@ -33,6 +35,7 @@ class RoleFactory extends Factory
         return $this->state([
             'name' => RoleEnum::getDescription(RoleEnum::WEB_USER),
             'code' => RoleEnum::WEB_USER,
+            'top_page_url' => '/passwords',
         ]);
     }
 
@@ -41,6 +44,7 @@ class RoleFactory extends Factory
         return $this->state([
             'name' => RoleEnum::getDescription(RoleEnum::MOBILE_USER),
             'code' => RoleEnum::MOBILE_USER,
+            'top_page_url' => '/passwords',
         ]);
     }
 }

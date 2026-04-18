@@ -26,12 +26,13 @@ class LoginController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $isExist = User::where('email', $email)
+        $user = User::with('role')
+            ->where('email', $email)
             ->whereNotNull('uid')
             ->whereNull('deleted_at')
-            ->exists();
+            ->first();
 
-        if (!$isExist) {
+        if (!$user) {
             \Log::info('ユーザーが見つかりませんでした。');
             return ApiResponseFormatter::unprocessible('ログインに失敗しました。');
         }
@@ -42,6 +43,7 @@ class LoginController extends Controller
 
             return ApiResponseFormatter::ok([
                 'access_token' => $authResult['access_token'],
+                'top_page_url' => $user->role->top_page_url,
             ]);
         } catch (Exception $e) {
             info("Login failed for user: $email - " . $e->getMessage());
