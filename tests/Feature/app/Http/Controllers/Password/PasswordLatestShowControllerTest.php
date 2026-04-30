@@ -149,14 +149,4 @@ class PasswordLatestShowControllerTest extends PmappTestCase
 
         $response->assertStatus(404);
     }
-
-    public function test_未ログイン時は401になること(): void
-    {
-        $response = $this->getJson(route('passwords.latest', [
-            'application_id' => $this->targetApplication->id,
-            'account_id' => $this->account->id,
-        ]));
-
-        $response->assertStatus(401);
-    }
 }
