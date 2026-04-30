@@ -9,7 +9,10 @@ use App\Http\Controllers\Password\PasswordUpdatePromoteIndexController;
 use App\Http\Enums\Role\RoleEnum;
 
 Route::prefix('/passwords')->group(function () {
-    Route::middleware(['auth:api', 'can:' . RoleEnum::ADMIN . ',' . RoleEnum::WEB_USER . ',' . RoleEnum::MOBILE_USER])->group(function () {
+    Route::middleware([
+        'auth:api',
+        'can:' . RoleEnum::ADMIN . ',' . RoleEnum::WEB_USER . ',' . RoleEnum::MOBILE_USER,
+    ])->group(function () {
         Route::get('/', PasswordIndexController::class)
             ->name('passwords.index');
         Route::post('/', PasswordCreateController::class)
