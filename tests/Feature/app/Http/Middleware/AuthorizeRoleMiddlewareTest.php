@@ -29,13 +29,13 @@ class AuthorizeRoleMiddlewareTest extends PmappTestCase
         ]);
     }
 
-    public function test_管理者以外はApplicationAPIにアクセスできないこと(): void
+    public function test_ApplicationAPIは全ロールアクセスできること(): void
     {
         $this->actingAs($this->webUser, 'api');
-        $this->getJson(route('applications.index'))->assertNotFound();
+        $this->getJson(route('applications.index'))->assertOk();
 
         $this->actingAs($this->mobileUser, 'api');
-        $this->getJson(route('applications.index'))->assertNotFound();
+        $this->getJson(route('applications.index'))->assertOk();
     }
 
     public function test_管理者以外はAccountAPIにアクセスできないこと(): void
