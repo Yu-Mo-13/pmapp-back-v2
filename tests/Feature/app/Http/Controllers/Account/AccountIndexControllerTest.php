@@ -76,6 +76,62 @@ class AccountIndexControllerTest extends PmappTestCase
         ]);
     }
 
+    public function test_WEB一般ユーザーでも正常取得できること(): void
+    {
+        $this->actingAs($this->webUser, 'api');
+
+        $response = $this->getJson(route('accounts'));
+
+        $response->assertOk();
+        $response->assertJsonCount(2);
+        $response->assertJsonFragment([
+            'id' => $this->account1->id,
+            'name' => $this->account1->name,
+            'application_id' => $this->targetApplication->id,
+            'application_name' => $this->targetApplication->name,
+            'notice_class' => (int) $this->account1->notice_class,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $this->account2->id,
+            'name' => $this->account2->name,
+            'application_id' => $this->targetApplication->id,
+            'application_name' => $this->targetApplication->name,
+            'notice_class' => (int) $this->account2->notice_class,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $this->ignoredAccount->id,
+            'name' => $this->ignoredAccount->name,
+        ]);
+    }
+
+    public function test_モバイル一般ユーザーでも正常取得できること(): void
+    {
+        $this->actingAs($this->mobileUser, 'api');
+
+        $response = $this->getJson(route('accounts'));
+
+        $response->assertOk();
+        $response->assertJsonCount(2);
+        $response->assertJsonFragment([
+            'id' => $this->account1->id,
+            'name' => $this->account1->name,
+            'application_id' => $this->targetApplication->id,
+            'application_name' => $this->targetApplication->name,
+            'notice_class' => (int) $this->account1->notice_class,
+        ]);
+        $response->assertJsonFragment([
+            'id' => $this->account2->id,
+            'name' => $this->account2->name,
+            'application_id' => $this->targetApplication->id,
+            'application_name' => $this->targetApplication->name,
+            'notice_class' => (int) $this->account2->notice_class,
+        ]);
+        $response->assertJsonMissing([
+            'id' => $this->ignoredAccount->id,
+            'name' => $this->ignoredAccount->name,
+        ]);
+    }
+
     public function test_未ログイン時は401になること(): void
     {
         $response = $this->getJson(route('accounts'));
