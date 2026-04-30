@@ -6,9 +6,10 @@ use App\Http\Controllers\UnregistedPassword\UnregistedPasswordDeleteAllControlle
 use App\Http\Controllers\UnregistedPassword\UnregistedPasswordDeleteController;
 use App\Http\Controllers\UnregistedPassword\UnregistedPasswordIndexController;
 use App\Http\Controllers\UnregistedPassword\UnregistedPasswordShowController;
+use App\Http\Enums\Role\RoleEnum;
 
 Route::prefix('/unregisted-passwords')->group(function () {
-    Route::middleware('auth:api')->group(function () {
+    Route::middleware(['auth:api', 'can:' . RoleEnum::ADMIN . ',' . RoleEnum::WEB_USER])->group(function () {
         Route::get('/', UnregistedPasswordIndexController::class)
             ->name('unregisted-passwords.index');
         Route::get('/{unregistedPassword}', UnregistedPasswordShowController::class)

@@ -88,4 +88,16 @@ class ApplicationIndexControllerTest extends PmappTestCase
         $response = $this->getJson(route('applications.index'));
         $response->assertStatus(401);
     }
+
+    public function test_WEB一般ユーザーはアプリケーションの一覧を取得できないこと(): void
+    {
+        $this->actingAs($this->webUser, 'api');
+
+        $response = $this->getJson(route('applications.index'));
+
+        $response->assertStatus(404);
+        $response->assertExactJson([
+            'message' => 'Not Found',
+        ]);
+    }
 }

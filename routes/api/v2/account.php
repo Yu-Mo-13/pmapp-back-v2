@@ -7,9 +7,10 @@ use App\Http\Controllers\Account\AccountApplicationIndexController;
 use App\Http\Controllers\Account\AccountShowController;
 use App\Http\Controllers\Account\AccountDeleteController;
 use App\Http\Controllers\Account\AccountUpdateController;
+use App\Http\Enums\Role\RoleEnum;
 
 Route::prefix('/accounts')->group(function () {
-    Route::middleware('auth:api')->group(function () {
+    Route::middleware(['auth:api', 'can:' . RoleEnum::ADMIN])->group(function () {
         Route::get('/', AccountIndexController::class)
             ->name('accounts');
         Route::get('/applications', AccountApplicationIndexController::class)
