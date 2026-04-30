@@ -8,11 +8,18 @@ use App\Http\Controllers\Application\ApplicationShowController;
 use App\Http\Controllers\Application\ApplicationUpdateController;
 use App\Http\Controllers\Application\ApplicationDeleteController;
 use App\Http\Controllers\Application\ApplicationAccountIndexController;
+use App\Http\Enums\Role\RoleEnum;
 
 Route::prefix('/applications')->group(function () {
-    Route::middleware('auth:api')->group(function () {
+    Route::middleware([
+        'auth:api',
+        'can:' . RoleEnum::ADMIN . ',' . RoleEnum::WEB_USER . ',' . RoleEnum::MOBILE_USER,
+    ])->group(function () {
         Route::get('/', ApplicationIndexController::class)
             ->name('applications.index');
+    });
+
+    Route::middleware(['auth:api', 'can:' . RoleEnum::ADMIN])->group(function () {
         Route::post('/', ApplicationCreateController::class)
             ->name('applications.create');
         Route::get('/{application}', ApplicationShowController::class)

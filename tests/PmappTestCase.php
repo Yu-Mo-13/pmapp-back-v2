@@ -57,14 +57,17 @@ class PmappTestCase extends TestCase
         $this->adminRole = Role::factory()->create([
             'name' => RoleEnum::getDescription(RoleEnum::ADMIN),
             'code' => RoleEnum::ADMIN,
+            'top_page_url' => '/applications',
         ]);
         $this->webUserRole = Role::factory()->create([
             'name' => RoleEnum::getDescription(RoleEnum::WEB_USER),
             'code' => RoleEnum::WEB_USER,
+            'top_page_url' => '/passwords',
         ]);
         $this->mobileUserRole = Role::factory()->create([
             'name' => RoleEnum::getDescription(RoleEnum::MOBILE_USER),
             'code' => RoleEnum::MOBILE_USER,
+            'top_page_url' => '/passwords',
         ]);
 
         // ユーザーの作成

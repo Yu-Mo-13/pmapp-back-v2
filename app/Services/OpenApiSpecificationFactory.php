@@ -330,15 +330,24 @@ class OpenApiSpecificationFactory
                 'type' => 'object',
                 'properties' => [
                     'access_token' => ['type' => 'string'],
+                    'top_page_url' => ['type' => 'string'],
                 ],
-                'required' => ['access_token'],
+                'required' => ['access_token', 'top_page_url'],
             ],
             'LoginStatusResponse' => [
                 'type' => 'object',
                 'properties' => [
                     'name' => ['type' => 'string'],
+                    'role' => [
+                        'type' => 'object',
+                        'nullable' => true,
+                        'properties' => [
+                            'code' => ['type' => 'string'],
+                        ],
+                        'required' => ['code'],
+                    ],
                 ],
-                'required' => ['name'],
+                'required' => ['name', 'role'],
             ],
             'ApplicationResponse' => [
                 'type' => 'object',
