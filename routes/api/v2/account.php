@@ -12,7 +12,7 @@ use App\Http\Enums\Role\RoleEnum;
 Route::prefix('/accounts')->group(function () {
     Route::middleware([
         'auth:api',
-        'can:' . RoleEnum::ADMIN . ',' . RoleEnum::WEB_USER . ',' . RoleEnum::MOBILE_USER,
+        'can:' . RoleEnum::ADMIN . ',' . RoleEnum::WEB_USER,
     ])->group(function () {
         Route::get('/', AccountIndexController::class)
             ->name('accounts');
