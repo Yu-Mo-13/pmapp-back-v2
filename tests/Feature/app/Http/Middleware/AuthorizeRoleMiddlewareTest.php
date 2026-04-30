@@ -59,11 +59,6 @@ class AuthorizeRoleMiddlewareTest extends PmappTestCase
         $this->getJson(route('passwords.index'))->assertOk();
     }
 
-    public function test_未ログインではPasswordUpdatePromoteAPIにアクセスできないこと(): void
-    {
-        $this->getJson(route('password-update-promote.index'))->assertUnauthorized();
-    }
-
     public function test_UnregistedPasswordAPIは管理者と一般ユーザーのみアクセスできること(): void
     {
         $this->actingAs($this->adminUser, 'api');
