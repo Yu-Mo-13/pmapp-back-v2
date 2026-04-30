@@ -38,10 +38,13 @@ class AuthorizeRoleMiddlewareTest extends PmappTestCase
         $this->getJson(route('applications.index'))->assertOk();
     }
 
-    public function test_管理者以外はAccountAPIにアクセスできないこと(): void
+    public function test_AccountAPIは管理者とWEB一般ユーザーのみアクセスできること(): void
     {
+        $this->actingAs($this->adminUser, 'api');
+        $this->getJson(route('accounts'))->assertOk();
+
         $this->actingAs($this->webUser, 'api');
-        $this->getJson(route('accounts'))->assertNotFound();
+        $this->getJson(route('accounts'))->assertOk();
 
         $this->actingAs($this->mobileUser, 'api');
         $this->getJson(route('accounts'))->assertNotFound();
