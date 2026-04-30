@@ -15,11 +15,11 @@ Route::prefix('/passwords')->group(function () {
     ])->group(function () {
         Route::get('/', PasswordIndexController::class)
             ->name('passwords.index');
+        Route::get('/latest', PasswordLatestShowController::class)
+            ->name('passwords.latest');
         Route::post('/', PasswordCreateController::class)
             ->name('passwords.create');
     });
-    Route::get('/latest', PasswordLatestShowController::class)
-        ->name('passwords.latest');
 });
 
 Route::get('/password-update-promote', PasswordUpdatePromoteIndexController::class)
