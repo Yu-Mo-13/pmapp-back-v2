@@ -481,6 +481,18 @@ class OpenApiSpecificationFactory
                 ],
                 'required' => ['uuid', 'password', 'application', 'account', 'created_at'],
             ],
+            'PreregistedPasswordTargetResponse' => [
+                'type' => 'object',
+                'properties' => [
+                    'application' => [
+                        '$ref' => '#/components/schemas/IdNameResource',
+                    ],
+                    'account' => [
+                        '$ref' => '#/components/schemas/NullableIdNameResource',
+                    ],
+                ],
+                'required' => ['application', 'account'],
+            ],
             'UnregistedPasswordIndexResponse' => $this->arraySchema('PreregistedPasswordIndexItem'),
             'UnregistedPasswordResponse' => [
                 '$ref' => '#/components/schemas/PreregistedPasswordResponse',
@@ -542,6 +554,10 @@ class OpenApiSpecificationFactory
                 'password.password',
                 'password.application_id',
                 'password.account_id',
+            ]),
+            'PreregistedPasswordCreateValidationErrorResponse' => $this->validationErrorSchema([
+                'preregisted_password.application_id',
+                'preregisted_password.account_id',
             ]),
             'PasswordLatestShowValidationErrorResponse' => $this->validationErrorSchema([
                 'application_id',
@@ -728,6 +744,8 @@ class OpenApiSpecificationFactory
                 return 'PreregistedPasswordIndexResponse';
             case 'PreregistedPasswordShowController':
                 return 'PreregistedPasswordResponse';
+            case 'PreregistedPasswordTargetShowController':
+                return 'PreregistedPasswordTargetResponse';
             case 'UnregistedPasswordIndexController':
                 return 'UnregistedPasswordIndexResponse';
             case 'UnregistedPasswordShowController':
@@ -741,6 +759,7 @@ class OpenApiSpecificationFactory
             case 'AccountUpdateController':
             case 'AccountDeleteController':
             case 'PasswordCreateController':
+            case 'PreregistedPasswordCreateController':
             case 'PreregistedPasswordDeleteController':
             case 'UnregistedPasswordDeleteController':
                 return 'EmptySuccessResponse';
@@ -803,6 +822,8 @@ class OpenApiSpecificationFactory
                 return 'ApplicationUpdateValidationErrorResponse';
             case 'PasswordCreateController':
                 return 'PasswordCreateValidationErrorResponse';
+            case 'PreregistedPasswordCreateController':
+                return 'PreregistedPasswordCreateValidationErrorResponse';
             case 'PasswordLatestShowController':
                 return 'PasswordLatestShowValidationErrorResponse';
             case 'PasswordIndexController':
