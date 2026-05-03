@@ -543,6 +543,10 @@ class OpenApiSpecificationFactory
                 'password.application_id',
                 'password.account_id',
             ]),
+            'PreregistedPasswordCreateValidationErrorResponse' => $this->validationErrorSchema([
+                'preregisted_password.application_id',
+                'preregisted_password.account_id',
+            ]),
             'PasswordLatestShowValidationErrorResponse' => $this->validationErrorSchema([
                 'application_id',
                 'account_id',
@@ -741,6 +745,7 @@ class OpenApiSpecificationFactory
             case 'AccountUpdateController':
             case 'AccountDeleteController':
             case 'PasswordCreateController':
+            case 'PreregistedPasswordCreateController':
             case 'PreregistedPasswordDeleteController':
             case 'UnregistedPasswordDeleteController':
                 return 'EmptySuccessResponse';
@@ -803,6 +808,8 @@ class OpenApiSpecificationFactory
                 return 'ApplicationUpdateValidationErrorResponse';
             case 'PasswordCreateController':
                 return 'PasswordCreateValidationErrorResponse';
+            case 'PreregistedPasswordCreateController':
+                return 'PreregistedPasswordCreateValidationErrorResponse';
             case 'PasswordLatestShowController':
                 return 'PasswordLatestShowValidationErrorResponse';
             case 'PasswordIndexController':

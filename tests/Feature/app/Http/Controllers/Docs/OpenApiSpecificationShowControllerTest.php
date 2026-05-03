@@ -128,8 +128,20 @@ class OpenApiSpecificationShowControllerTest extends TestCase
             $specification['paths']['/api/v2/healthchecks']['post']['responses']['200']['content']['application/json']['schema']['$ref']
         );
         $this->assertSame(
+            '#/components/schemas/EmptySuccessResponse',
+            $specification['paths']['/api/v2/preregisted-passwords']['post']['responses']['200']['content']['application/json']['schema']['$ref']
+        );
+        $this->assertSame(
             '#/components/schemas/PreregistedPasswordResponse',
             $specification['paths']['/api/v2/preregisted-passwords/{preregistedPassword}']['get']['responses']['200']['content']['application/json']['schema']['$ref']
+        );
+        $this->assertSame(
+            '#/components/schemas/PreregistedPasswordCreateValidationErrorResponse',
+            $specification['paths']['/api/v2/preregisted-passwords']['post']['responses']['422']['content']['application/json']['schema']['$ref']
+        );
+        $this->assertSame(
+            '仮登録パスワード管理',
+            $specification['paths']['/api/v2/preregisted-passwords']['post']['tags'][0]
         );
         $this->assertSame(
             '#/components/schemas/UnregistedPasswordResponse',
