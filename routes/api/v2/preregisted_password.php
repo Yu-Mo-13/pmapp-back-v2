@@ -6,9 +6,18 @@ use App\Http\Controllers\PreregistedPassword\PreregistedPasswordDeleteController
 use App\Http\Controllers\PreregistedPassword\PreregistedPasswordIndexController;
 use App\Http\Controllers\PreregistedPassword\PreregistedPasswordCreateController;
 use App\Http\Controllers\PreregistedPassword\PreregistedPasswordShowController;
+use App\Http\Controllers\PreregistedPassword\PreregistedPasswordTargetShowController;
 use App\Http\Enums\Role\RoleEnum;
 
 Route::prefix('/preregisted-passwords')->group(function () {
+    Route::middleware([
+        'auth:api',
+        'can:' . RoleEnum::MOBILE_USER,
+    ])->group(function () {
+        Route::get('/target', PreregistedPasswordTargetShowController::class)
+            ->name('preregisted-passwords.target');
+    });
+
     Route::middleware([
         'auth:api',
         'can:' . RoleEnum::ADMIN . ',' . RoleEnum::WEB_USER . ',' . RoleEnum::MOBILE_USER,

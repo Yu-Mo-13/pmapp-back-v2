@@ -85,4 +85,28 @@ class AuthorizeRoleMiddlewareTest extends PmappTestCase
         $this->actingAs($this->mobileUser, 'api');
         $this->getJson(route('preregisted-passwords.index'))->assertOk();
     }
+
+    public function test_PreregistedPasswordTargetAPIはモバイル一般ユーザーのみアクセスできること(): void
+    {
+        $application = Application::factory()->create([
+            'account_class' => true,
+        ]);
+        $account = Account::factory()->create([
+            'application_id' => $application->id,
+        ]);
+
+        $parameters = [
+            'application_id' => $application->id,
+            'account_id' => $account->id,
+        ];
+
+        $this->actingAs($this->adminUser, 'api');
+        $this->getJson(route('preregisted-passwords.target', $parameters))->assertNotFound();
+
+        $this->actingAs($this->webUser, 'api');
+        $this->getJson(route('preregisted-passwords.target', $parameters))->assertNotFound();
+
+        $this->actingAs($this->mobileUser, 'api');
+        $this->getJson(route('preregisted-passwords.target', $parameters))->assertOk();
+    }
 }
