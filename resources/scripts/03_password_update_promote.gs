@@ -20,10 +20,6 @@ function main() {
   SendLine('[dev環境]パスワード変更促進通知終了');
 }
 
-function convertDate(registered_date) {
-  return Utilities.parseDate(registered_date, 'JST', 'yyyy-MM-dd')
-}
-
 // 作成済みの仮登録パスワードを全て削除
 function destroyAutoRegistPassword() {
   const url = `${PropertiesService.getScriptProperties().getProperty('ROOT')}${PropertiesService.getScriptProperties().getProperty('AUTOREGISTENDPOINT')}`;
