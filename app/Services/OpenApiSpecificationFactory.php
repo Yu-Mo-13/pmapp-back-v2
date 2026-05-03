@@ -481,6 +481,18 @@ class OpenApiSpecificationFactory
                 ],
                 'required' => ['uuid', 'password', 'application', 'account', 'created_at'],
             ],
+            'PreregistedPasswordTargetResponse' => [
+                'type' => 'object',
+                'properties' => [
+                    'application' => [
+                        '$ref' => '#/components/schemas/IdNameResource',
+                    ],
+                    'account' => [
+                        '$ref' => '#/components/schemas/NullableIdNameResource',
+                    ],
+                ],
+                'required' => ['application', 'account'],
+            ],
             'UnregistedPasswordIndexResponse' => $this->arraySchema('PreregistedPasswordIndexItem'),
             'UnregistedPasswordResponse' => [
                 '$ref' => '#/components/schemas/PreregistedPasswordResponse',
@@ -732,6 +744,8 @@ class OpenApiSpecificationFactory
                 return 'PreregistedPasswordIndexResponse';
             case 'PreregistedPasswordShowController':
                 return 'PreregistedPasswordResponse';
+            case 'PreregistedPasswordTargetShowController':
+                return 'PreregistedPasswordTargetResponse';
             case 'UnregistedPasswordIndexController':
                 return 'UnregistedPasswordIndexResponse';
             case 'UnregistedPasswordShowController':
