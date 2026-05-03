@@ -27,7 +27,9 @@ class PreregistedPasswordCreateController extends Controller
         PreregistedPassword::create([
             'password' => $this->generatePassword($application->pre_password_size, (bool) $application->mark_class),
             'application_id' => $preregistedPasswordData['application_id'],
-            'account_id' => $preregistedPasswordData['account_id'],
+            'account_id' => $application->account_class
+                ? ($preregistedPasswordData['account_id'] ?? null)
+                : null,
         ]);
 
         return ApiResponseFormatter::ok();

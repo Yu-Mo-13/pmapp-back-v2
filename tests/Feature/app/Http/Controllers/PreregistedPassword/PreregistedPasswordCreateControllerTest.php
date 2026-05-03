@@ -20,11 +20,16 @@ class PreregistedPasswordCreateControllerTest extends PmappTestCase
 
     private Account $symbolAccount;
 
+    private Application $accountClassFalseApplication;
+
+    private Account $accountClassFalseApplicationAccount;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->application = Application::factory()->create([
+            'account_class' => true,
             'mark_class' => false,
             'pre_password_size' => 12,
         ]);
@@ -33,11 +38,21 @@ class PreregistedPasswordCreateControllerTest extends PmappTestCase
         ]);
 
         $this->symbolApplication = Application::factory()->create([
+            'account_class' => true,
             'mark_class' => true,
             'pre_password_size' => 10,
         ]);
         $this->symbolAccount = Account::factory()->create([
             'application_id' => $this->symbolApplication->id,
+        ]);
+
+        $this->accountClassFalseApplication = Application::factory()->create([
+            'account_class' => false,
+            'mark_class' => false,
+            'pre_password_size' => 8,
+        ]);
+        $this->accountClassFalseApplicationAccount = Account::factory()->create([
+            'application_id' => $this->accountClassFalseApplication->id,
         ]);
     }
 
@@ -204,6 +219,38 @@ class PreregistedPasswordCreateControllerTest extends PmappTestCase
             'preregisted_password' => [
                 'application_id' => $this->application->id,
                 'account_id' => $otherAccount->id,
+            ],
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['preregisted_password.account_id']);
+    }
+
+    public function test_account_class_falseアプリではaccount_id未指定で作成できること(): void
+    {
+        $this->actingAs($this->adminUser, 'api');
+
+        $response = $this->postJson(route('preregisted-passwords.create'), [
+            'preregisted_password' => [
+                'application_id' => $this->accountClassFalseApplication->id,
+            ],
+        ]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas('preregisted_passwords', [
+            'application_id' => $this->accountClassFalseApplication->id,
+            'account_id' => null,
+        ]);
+    }
+
+    public function test_account_class_falseアプリではaccount_id指定時は422になること(): void
+    {
+        $this->actingAs($this->adminUser, 'api');
+
+        $response = $this->postJson(route('preregisted-passwords.create'), [
+            'preregisted_password' => [
+                'application_id' => $this->accountClassFalseApplication->id,
+                'account_id' => $this->accountClassFalseApplicationAccount->id,
             ],
         ]);
 
