@@ -8,6 +8,7 @@ use App\Http\Requests\Password\PasswordLatestShowRequest;
 use App\Models\Application;
 use App\Models\Password;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 
 class PasswordLatestShowController extends Controller
@@ -53,7 +54,7 @@ class PasswordLatestShowController extends Controller
         }
 
         return ApiResponseFormatter::ok([
-            'password' => $latestPassword->password,
+            'password' => Crypt::decryptString($latestPassword->getRawOriginal('password')),
         ]);
     }
 }

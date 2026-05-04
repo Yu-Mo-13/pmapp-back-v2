@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\Application;
 use App\Models\Password;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Tests\PmappTestCase;
 
 class PasswordLatestShowControllerTest extends PmappTestCase
@@ -61,9 +62,10 @@ class PasswordLatestShowControllerTest extends PmappTestCase
             'account_id' => $this->account->id,
         ]));
 
+        $this->assertSame('latest-password', Crypt::decryptString($latestPassword->getRawOriginal('password')));
         $response->assertStatus(200);
         $response->assertJson([
-            'password' => $latestPassword->password,
+            'password' => 'latest-password',
         ]);
     }
 
@@ -92,9 +94,10 @@ class PasswordLatestShowControllerTest extends PmappTestCase
             'application_id' => $this->accountClassFalseApplication->id,
         ]));
 
+        $this->assertSame('latest-password', Crypt::decryptString($latestPassword->getRawOriginal('password')));
         $response->assertStatus(200);
         $response->assertJson([
-            'password' => $latestPassword->password,
+            'password' => 'latest-password',
         ]);
     }
 
