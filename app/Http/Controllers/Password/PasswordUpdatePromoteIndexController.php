@@ -46,6 +46,7 @@ class PasswordUpdatePromoteIndexController extends Controller
                 $join->on('latest_passwords.application_id', '=', 'applications.id');
             })
             ->where('applications.account_class', false)
+            ->where('applications.notice_class', true)
             ->where('latest_passwords.latest_created_at', '<=', $threshold)
             ->orderBy('applications.id')
             ->get([
@@ -78,6 +79,9 @@ class PasswordUpdatePromoteIndexController extends Controller
                     ->on('latest_passwords.account_id', '=', 'accounts.id');
             })
             ->where('applications.account_class', true)
+            ->where('applications.notice_class', true)
+            ->where('accounts.notice_class', true)
+            ->whereNull('applications.deleted_at')
             ->where('latest_passwords.latest_created_at', '<=', $threshold)
             ->orderBy('applications.id')
             ->orderBy('accounts.id')
