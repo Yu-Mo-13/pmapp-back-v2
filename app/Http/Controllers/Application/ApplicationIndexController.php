@@ -12,7 +12,9 @@ class ApplicationIndexController extends Controller
 {
     public function __invoke(): JsonResponse
     {
-        $applications = Application::orderBy('id')->get();
+        $applications = Application::whereNull('deleted_at')
+            ->orderBy('id')
+            ->get();
         $transformApplications = $this->transformApplications($applications);
         return ApiResponseFormatter::ok($transformApplications);
     }
