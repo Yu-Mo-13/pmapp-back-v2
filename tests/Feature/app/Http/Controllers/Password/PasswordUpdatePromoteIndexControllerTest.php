@@ -30,6 +30,7 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
             'id' => 2,
             'name' => 'アカウントなしアプリケーション',
             'account_class' => false,
+            'notice_class' => true,
         ]);
         Password::factory()->create([
             'application_id' => $applicationWithoutAccount->id,
@@ -41,11 +42,13 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
             'id' => 1,
             'name' => 'アカウントありアプリケーション',
             'account_class' => true,
+            'notice_class' => true,
         ]);
         $targetAccount = Account::factory()->create([
             'id' => 3,
             'name' => '@target',
             'application_id' => $applicationWithAccount->id,
+            'notice_class' => true,
         ]);
         Password::factory()->create([
             'application_id' => $applicationWithAccount->id,
@@ -57,6 +60,7 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
             'id' => 4,
             'name' => '@excluded',
             'application_id' => $applicationWithAccount->id,
+            'notice_class' => true,
         ]);
         Password::factory()->create([
             'application_id' => $applicationWithAccount->id,
@@ -68,6 +72,7 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
             'id' => 5,
             'name' => 'パスワード未登録アプリケーション',
             'account_class' => false,
+            'notice_class' => true,
         ]);
 
         $response = $this->getJson(route('password-update-promote.index'));
@@ -98,6 +103,7 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
     {
         $application = Application::factory()->create([
             'account_class' => false,
+            'notice_class' => true,
         ]);
 
         Password::factory()->create([
@@ -107,6 +113,7 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
         ]);
         $account = Account::factory()->create([
             'application_id' => $application->id,
+            'notice_class' => true,
         ]);
         Password::factory()->create([
             'application_id' => $application->id,
@@ -133,6 +140,7 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
         $application = Application::factory()->create([
             'name' => '境界日対象アプリ',
             'account_class' => false,
+            'notice_class' => true,
         ]);
 
         Password::factory()->create([
@@ -160,6 +168,7 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
         $application = Application::factory()->create([
             'name' => '境界日除外アプリ',
             'account_class' => false,
+            'notice_class' => true,
         ]);
 
         Password::factory()->create([
@@ -167,6 +176,88 @@ class PasswordUpdatePromoteIndexControllerTest extends PmappTestCase
             'account_id' => null,
             'created_at' => Carbon::parse('2025-09-15 00:00:01'),
         ]);
+
+        $response = $this->getJson(route('password-update-promote.index'));
+
+        $response->assertOk()
+            ->assertExactJson([]);
+    }
+
+    public function test_notice_class_falseのアプリケーションは通知対象に含まれないこと(): void
+    {
+        $application = Application::factory()->create([
+            'name' => '通知対象外アプリ',
+            'account_class' => false,
+            'notice_class' => false,
+        ]);
+
+        Password::factory()->create([
+            'application_id' => $application->id,
+            'account_id' => null,
+            'created_at' => Carbon::parse('2025-09-01 00:00:00'),
+        ]);
+
+        $response = $this->getJson(route('password-update-promote.index'));
+
+        $response->assertOk()
+            ->assertExactJson([]);
+    }
+
+    public function test_notice_class_falseのアカウントは通知対象に含まれないこと(): void
+    {
+        $application = Application::factory()->create([
+            'name' => '通知対象アプリ',
+            'account_class' => true,
+            'notice_class' => true,
+        ]);
+
+        $excludedAccount = Account::factory()->create([
+            'name' => '@excluded',
+            'application_id' => $application->id,
+            'notice_class' => false,
+        ]);
+        Password::factory()->create([
+            'application_id' => $application->id,
+            'account_id' => $excludedAccount->id,
+            'created_at' => Carbon::parse('2025-09-01 00:00:00'),
+        ]);
+
+        $response = $this->getJson(route('password-update-promote.index'));
+
+        $response->assertOk()
+            ->assertExactJson([]);
+    }
+
+    public function test_削除済みアプリケーションとそのアカウントは通知対象に含まれないこと(): void
+    {
+        $applicationWithoutAccount = Application::factory()->create([
+            'name' => '削除済みアカウントなしアプリ',
+            'account_class' => false,
+            'notice_class' => true,
+        ]);
+        Password::factory()->create([
+            'application_id' => $applicationWithoutAccount->id,
+            'account_id' => null,
+            'created_at' => Carbon::parse('2025-09-01 00:00:00'),
+        ]);
+        $applicationWithoutAccount->delete();
+
+        $applicationWithAccount = Application::factory()->create([
+            'name' => '削除済みアカウントありアプリ',
+            'account_class' => true,
+            'notice_class' => true,
+        ]);
+        $account = Account::factory()->create([
+            'name' => '@deleted-app-account',
+            'application_id' => $applicationWithAccount->id,
+            'notice_class' => true,
+        ]);
+        Password::factory()->create([
+            'application_id' => $applicationWithAccount->id,
+            'account_id' => $account->id,
+            'created_at' => Carbon::parse('2025-09-01 00:00:00'),
+        ]);
+        $applicationWithAccount->delete();
 
         $response = $this->getJson(route('password-update-promote.index'));
 
