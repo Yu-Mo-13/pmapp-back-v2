@@ -2,14 +2,21 @@
 
 namespace Tests\Feature\app\Http\Controllers\Application;
 
+use App\Models\Application;
 use Tests\PmappTestCase;
 
 class ApplicationIndexControllerTest extends PmappTestCase
 {
+    private Application $deletedApplication;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpApplication();
+        $this->deletedApplication = Application::factory()->create([
+            'name' => 'Deleted Application',
+        ]);
+        $this->deletedApplication->delete();
     }
 
     public function test_レスポンス形式の確認()
@@ -102,6 +109,19 @@ class ApplicationIndexControllerTest extends PmappTestCase
             'account_class' => 0,
             'notice_class' => 0,
             'mark_class' => 1,
+        ]);
+    }
+
+    public function test_削除済みアプリケーションはレスポンスに含まれないこと(): void
+    {
+        $this->actingAs($this->adminUser, 'api');
+
+        $response = $this->getJson(route('applications.index'));
+
+        $response->assertOk();
+        $response->assertJsonMissing([
+            'id' => $this->deletedApplication->id,
+            'name' => $this->deletedApplication->name,
         ]);
     }
 }
