@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Requests\User\UserIndexRequest;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
@@ -133,9 +134,6 @@ class OpenApiSpecificationFactory
                 'name' => '仮登録パスワード管理',
             ],
             [
-                'name' => '未登録パスワード管理',
-            ],
-            [
                 'name' => '共通',
             ],
         ];
@@ -149,6 +147,13 @@ class OpenApiSpecificationFactory
                 $this->inferSuccessSchemaName($route)
             ),
         ];
+
+        if ($route->named('users.index')) {
+            $responses['200'] = [
+                'description' => 'User list CSV download',
+                'content' => ['text/csv' => ['schema' => ['type' => 'string', 'format' => 'binary']]],
+            ];
+        }
 
         if ($this->requiresAuthentication($route)) {
             $responses['401'] = $this->buildJsonResponse('Unauthorized', 'UnauthorizedResponse');
@@ -194,6 +199,15 @@ class OpenApiSpecificationFactory
 
     private function buildParameters(Route $route): array
     {
+        if ($route->named('users.index')) {
+            return [[
+                'name' => UserIndexRequest::COUNTERSIGN_HEADER,
+                'in' => 'header',
+                'required' => true,
+                'schema' => ['type' => 'string'],
+            ]];
+        }
+
         if (!in_array('GET', $this->extractMethods($route), true)) {
             return [];
         }
@@ -493,17 +507,6 @@ class OpenApiSpecificationFactory
                 ],
                 'required' => ['application', 'account'],
             ],
-            'UnregistedPasswordIndexResponse' => $this->arraySchema('PreregistedPasswordIndexItem'),
-            'UnregistedPasswordResponse' => [
-                '$ref' => '#/components/schemas/PreregistedPasswordResponse',
-            ],
-            'DeleteAllUnregistedPasswordsResponse' => [
-                'type' => 'object',
-                'properties' => [
-                    'message' => ['type' => 'string'],
-                ],
-                'required' => ['message'],
-            ],
             'UnauthorizedResponse' => $this->messageOnlySchema(),
             'ForbiddenResponse' => $this->messageOnlySchema(),
             'NotFoundResponse' => $this->messageOnlySchema(),
@@ -746,12 +749,6 @@ class OpenApiSpecificationFactory
                 return 'PreregistedPasswordResponse';
             case 'PreregistedPasswordTargetShowController':
                 return 'PreregistedPasswordTargetResponse';
-            case 'UnregistedPasswordIndexController':
-                return 'UnregistedPasswordIndexResponse';
-            case 'UnregistedPasswordShowController':
-                return 'UnregistedPasswordResponse';
-            case 'UnregistedPasswordDeleteAllController':
-                return 'DeleteAllUnregistedPasswordsResponse';
             case 'ApplicationCreateController':
             case 'ApplicationUpdateController':
             case 'ApplicationDeleteController':
@@ -761,7 +758,6 @@ class OpenApiSpecificationFactory
             case 'PasswordCreateController':
             case 'PreregistedPasswordCreateController':
             case 'PreregistedPasswordDeleteController':
-            case 'UnregistedPasswordDeleteController':
                 return 'EmptySuccessResponse';
             default:
                 return 'GenericSuccessResponse';
@@ -868,10 +864,6 @@ class OpenApiSpecificationFactory
 
         if (Str::startsWith($route->uri(), 'api/v2/preregisted-passwords')) {
             return '仮登録パスワード管理';
-        }
-
-        if (Str::startsWith($route->uri(), 'api/v2/unregisted-passwords')) {
-            return '未登録パスワード管理';
         }
 
         return '共通';

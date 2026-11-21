@@ -5,7 +5,6 @@ namespace Tests\Feature\app\Http\Middleware;
 use App\Models\Account;
 use App\Models\Application;
 use App\Models\PreregistedPassword;
-use App\Models\UnregistedPassword;
 use Tests\PmappTestCase;
 
 class AuthorizeRoleMiddlewareTest extends PmappTestCase
@@ -20,10 +19,6 @@ class AuthorizeRoleMiddlewareTest extends PmappTestCase
         ]);
 
         PreregistedPassword::factory()->create([
-            'application_id' => $application->id,
-            'account_id' => $account->id,
-        ]);
-        UnregistedPassword::factory()->create([
             'application_id' => $application->id,
             'account_id' => $account->id,
         ]);
@@ -60,18 +55,6 @@ class AuthorizeRoleMiddlewareTest extends PmappTestCase
 
         $this->actingAs($this->mobileUser, 'api');
         $this->getJson(route('passwords.index'))->assertOk();
-    }
-
-    public function test_UnregistedPasswordAPIは管理者と一般ユーザーのみアクセスできること(): void
-    {
-        $this->actingAs($this->adminUser, 'api');
-        $this->getJson(route('unregisted-passwords.index'))->assertOk();
-
-        $this->actingAs($this->webUser, 'api');
-        $this->getJson(route('unregisted-passwords.index'))->assertOk();
-
-        $this->actingAs($this->mobileUser, 'api');
-        $this->getJson(route('unregisted-passwords.index'))->assertNotFound();
     }
 
     public function test_PreregistedPasswordAPIは全ロールアクセスできること(): void

@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property int $id
  * @property string $name ユーザー名
  * @property string $email メールアドレス
+ * @property string|null $uid Supabase UID
  * @property int $role_id ロールID
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

@@ -63,4 +63,5 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           APP_KEY: ${{ secrets.APP_KEY }}
+          APP_COUNTERSIGN: ${{ secrets.APP_COUNTERSIGN }}
         run: serverless deploy --stage $SLS_STAGE --region $SLS_REGION

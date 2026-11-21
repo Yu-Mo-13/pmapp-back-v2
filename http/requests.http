@@ -1,0 +1,219 @@
+### トップページ
+GET {{baseUrl}}/
+Accept: application/json
+
+### API ドキュメント
+GET {{baseUrl}}/docs/api
+Accept: text/html
+
+### OpenAPI 定義
+GET {{baseUrl}}/docs/openapi.json
+Accept: application/json
+
+### Sanctum の CSRF Cookie
+GET {{baseUrl}}/sanctum/csrf-cookie
+Accept: application/json
+
+### API 疎通確認
+GET {{baseUrl}}/api/v2/check
+Accept: application/json
+
+### ヘルスチェックを記録
+POST {{baseUrl}}/api/v2/healthchecks
+Accept: application/json
+
+### ヘルスチェックステータス
+GET {{baseUrl}}/api/v2/healthchecks/status
+Accept: application/json
+
+### ログイン
+POST {{baseUrl}}/api/v2/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "{{loginEmail}}",
+  "password": "{{loginPassword}}"
+}
+
+> {%
+    client.global.clear("accessToken");
+    if (response.status === 200 && response.body.access_token) {
+        client.global.set("accessToken", response.body.access_token);
+    }
+%}
+
+### ログイン状態
+GET {{baseUrl}}/api/v2/login/status
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### メニュー一覧
+GET {{baseUrl}}/api/v2/menus
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### ユーザー一覧（CSV）
+GET {{baseUrl}}/api/v2/users
+Accept: text/csv
+X-Countersign: {{appCountersign}}
+
+### アプリケーション一覧
+GET {{baseUrl}}/api/v2/applications
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### アプリケーション作成（管理者）
+POST {{baseUrl}}/api/v2/applications
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "application": {
+    "name": "HTTP Client 動作確認",
+    "account_class": true,
+    "notice_class": true,
+    "mark_class": true,
+    "pre_password_size": 16
+  }
+}
+
+### アプリケーション詳細（管理者）
+GET {{baseUrl}}/api/v2/applications/{{applicationId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### アプリケーションのアカウント一覧（管理者）
+GET {{baseUrl}}/api/v2/applications/{{applicationId}}/accounts
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### アプリケーション更新（管理者）
+PUT {{baseUrl}}/api/v2/applications/{{applicationId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "application": {
+    "name": "HTTP Client 動作確認",
+    "account_class": true,
+    "notice_class": true,
+    "mark_class": true,
+    "pre_password_size": 16
+  }
+}
+
+### アプリケーション削除（管理者）
+DELETE {{baseUrl}}/api/v2/applications/{{applicationId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### アカウント一覧（管理者・Web ユーザー）
+GET {{baseUrl}}/api/v2/accounts
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### アカウント管理対象のアプリケーション一覧（管理者）
+GET {{baseUrl}}/api/v2/accounts/applications
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### アカウント作成（管理者）
+POST {{baseUrl}}/api/v2/accounts
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "account": {
+    "name": "HTTP Client 動作確認用アカウント",
+    "application_id": {{applicationId}},
+    "notice_class": true
+  }
+}
+
+### アカウント詳細（管理者）
+GET {{baseUrl}}/api/v2/accounts/{{accountId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### アカウント更新（管理者）
+PUT {{baseUrl}}/api/v2/accounts/{{accountId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "account": {
+    "name": "HTTP Client 動作確認用アカウント",
+    "notice_class": true
+  }
+}
+
+### アカウント削除（管理者）
+DELETE {{baseUrl}}/api/v2/accounts/{{accountId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### 仮登録対象の詳細（モバイルユーザー）
+GET {{baseUrl}}/api/v2/preregisted-passwords/target?application_id={{applicationId}}&account_id={{accountId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### 仮登録パスワード一覧
+GET {{baseUrl}}/api/v2/preregisted-passwords
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### 仮登録パスワード作成
+POST {{baseUrl}}/api/v2/preregisted-passwords
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "preregisted_password": {
+    "application_id": {{applicationId}},
+    "account_id": {{accountId}}
+  }
+}
+
+### 仮登録パスワード詳細
+GET {{baseUrl}}/api/v2/preregisted-passwords/{{preregistedPasswordId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### 仮登録パスワード削除
+DELETE {{baseUrl}}/api/v2/preregisted-passwords/{{preregistedPasswordId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### 登録済みパスワード一覧（アプリケーション ID は任意）
+GET {{baseUrl}}/api/v2/passwords?application_id={{applicationId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### 最新の登録済みパスワード
+GET {{baseUrl}}/api/v2/passwords/latest?application_id={{applicationId}}&account_id={{accountId}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### パスワード本登録
+POST {{baseUrl}}/api/v2/passwords
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "password": {
+    "password": "http-client-example-only",
+    "application_id": {{applicationId}},
+    "account_id": {{accountId}}
+  }
+}
+
+### パスワード更新推奨対象一覧
+GET {{baseUrl}}/api/v2/password-update-promote
+Accept: application/json
