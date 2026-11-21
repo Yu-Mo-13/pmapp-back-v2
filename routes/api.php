@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v2')->group(function () {
     require base_path('routes/api/v2/auth.php');
+    require base_path('routes/api/v2/user.php');
     require base_path('routes/api/v2/application.php');
     require base_path('routes/api/v2/account.php');
     require base_path('routes/api/v2/menu.php');

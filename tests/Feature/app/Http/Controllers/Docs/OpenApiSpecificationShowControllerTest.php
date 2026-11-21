@@ -7,6 +7,18 @@ use Tests\TestCase;
 
 class OpenApiSpecificationShowControllerTest extends TestCase
 {
+    public function test_ユーザー一覧に合言葉ヘッダーとCSVレスポンスを記載する(): void
+    {
+        $response = $this->getJson('/docs/openapi.json')->assertOk();
+        $operation = $response->json('paths./api/v2/users.get');
+
+        $this->assertSame('X-Countersign', $operation['parameters'][0]['name']);
+        $this->assertSame('header', $operation['parameters'][0]['in']);
+        $this->assertTrue($operation['parameters'][0]['required']);
+        $this->assertArrayHasKey('text/csv', $operation['responses']['200']['content']);
+        $this->assertArrayHasKey(422, $operation['responses']);
+    }
+
     public function test_OpenAPIドキュメント系ルートはセッションを開始しない(): void
     {
         $router = $this->app->make(Router::class);
