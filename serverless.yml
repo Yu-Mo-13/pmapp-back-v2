@@ -44,6 +44,7 @@ provider:
     LOG_LEVEL: ${self:custom.stageConfig.${self:provider.stage}.logLevel}
 
     APP_KEY: ${ssm:/pmapp/${self:provider.stage}/APP_KEY}
+    APP_COUNTERSIGN: ${env:APP_COUNTERSIGN, ''}
 
     # Supabase
     SUPABASE_URL: ${env:SUPABASE_URL}
