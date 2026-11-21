@@ -53,7 +53,7 @@ class MenuSeeder extends Seeder
                 'admin_visible' => true,
                 'web_user_visible' => true,
                 'mobile_user_visible' => true,
-                'sort_order' => 5,
+                'sort_order' => 4,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

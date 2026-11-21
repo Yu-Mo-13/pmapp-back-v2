@@ -50,17 +50,6 @@ class MenuIndexControllerTest extends PmappTestCase
             ]);
     }
 
-    public function test_既存の未登録パスワード一覧メニューは表示されない(): void
-    {
-        Menu::factory()->create([
-            'path' => '/unregisted-passwords',
-            'admin_visible' => true,
-        ]);
-        $this->actingAs($this->adminUser);
-
-        $this->getJson(route('menus'))->assertOk()->assertExactJson([]);
-    }
-
     private function createMenus(): void
     {
         Menu::factory()->create([
@@ -96,7 +85,7 @@ class MenuIndexControllerTest extends PmappTestCase
             'admin_visible' => true,
             'web_user_visible' => true,
             'mobile_user_visible' => true,
-            'sort_order' => 5,
+            'sort_order' => 4,
         ]);
     }
 }

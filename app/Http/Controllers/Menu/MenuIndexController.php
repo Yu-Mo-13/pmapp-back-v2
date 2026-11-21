@@ -26,7 +26,6 @@ class MenuIndexController extends Controller
 
         $menus = Menu::query()
             ->where($visibilityColumn, true)
-            ->where('path', '!=', '/unregisted-passwords')
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get(['name', 'path'])
