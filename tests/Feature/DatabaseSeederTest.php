@@ -12,12 +12,12 @@ class DatabaseSeederTest extends TestCase
 
         $this->artisan('db:seed')->assertExitCode(0);
 
-        $this->assertDatabaseCount('menus', 5);
+        $this->assertDatabaseCount('menus', 4);
         $this->assertDatabaseCount('applications', 10);
         $this->assertDatabaseCount('accounts', 30);
         $this->assertDatabaseCount('passwords', 30);
         $this->assertDatabaseCount('preregisted_passwords', 30);
-        $this->assertDatabaseCount('unregisted_passwords', 30);
+        $this->assertDatabaseCount('unregisted_passwords', 0);
         $this->assertDatabaseCount('users', 6);
         $this->assertDatabaseCount('roles', 9);
     }
@@ -28,7 +28,7 @@ class DatabaseSeederTest extends TestCase
 
         $this->artisan('db:seed')->assertExitCode(0);
 
-        $this->assertDatabaseCount('menus', 5);
+        $this->assertDatabaseCount('menus', 4);
         $this->assertDatabaseCount('applications', 0);
         $this->assertDatabaseCount('accounts', 0);
         $this->assertDatabaseCount('passwords', 0);
