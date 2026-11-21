@@ -59,6 +59,16 @@ docker-compose exec app php artisan migrate
 | PostgreSQL | localhost:5432 | データベース直接接続 |
 | Redis | localhost:6379 | Redis接続 |
 
+## HTTP Client で API を試す
+
+PhpStorm の HTTP Client で [http/requests.http](http/requests.http) を開き、実行環境に `local` を選んで、各リクエストの実行ボタンを押します。接続先の初期値は `http://localhost:8080` です。
+
+1. 認証が必要な場合は、`http/http-client.private.env.json.example` を同じディレクトリの `http-client.private.env.json` にコピーし、ローカル環境の Supabase テストユーザーのメールアドレスとパスワードを設定します。このユーザーはアプリ側のユーザーにも紐付いている必要があります。
+2. 「ログイン」を実行すると、後続のリクエストが返却されたアクセストークンを Bearer 認証に使います。ロール指定のあるリクエストは、そのロールのユーザーでログインして実行します。ゲスト時のログイン状態やメニューを確認するには、各リクエストの `Authorization` ヘッダーを外します。
+3. [http-client.env.json](http/http-client.env.json) の ID をローカルのテストデータに合わせます。パスワード関連の例は、アカウント管理ありのアプリケーションと、それに属するアカウントを使います。アカウント管理なしの場合は、クエリの `account_id` を省略し、登録用 JSON の `account_id` には `null` を指定します。
+
+作成・更新・削除のリクエストはローカルのテストデータに対して個別に実行してください。「未登録パスワード全件削除」も含まれます。
+
 ## 🗄️ データベース接続手順
 
 ### PostgreSQL接続情報
