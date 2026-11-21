@@ -67,6 +67,8 @@ PhpStorm の HTTP Client で [http/requests.http](http/requests.http) を開き�
 2. 「ログイン」を実行すると、後続のリクエストが返却されたアクセストークンを Bearer 認証に使います。ロール指定のあるリクエストは、そのロールのユーザーでログインして実行します。ゲスト時のログイン状態やメニューを確認するには、各リクエストの `Authorization` ヘッダーを外します。
 3. [http-client.env.json](http/http-client.env.json) の ID をローカルのテストデータに合わせます。パスワード関連の例は、アカウント管理ありのアプリケーションと、それに属するアカウントを使います。アカウント管理なしの場合は、クエリの `account_id` を省略し、登録用 JSON の `account_id` には `null` を指定します。
 
+「ユーザー一覧（CSV）」を実行するには、`http-client.private.env.json` の `local.appCountersign` に、ローカル API の `APP_COUNTERSIGN` と同じ値を設定します。
+
 作成・更新・削除のリクエストはローカルのテストデータに対して個別に実行してください。
 
 ## 🗄️ データベース接続手順
