@@ -53,6 +53,11 @@ GET {{baseUrl}}/api/v2/menus
 Accept: application/json
 Authorization: Bearer {{accessToken}}
 
+### ユーザー一覧（CSV）
+GET {{baseUrl}}/api/v2/users
+Accept: text/csv
+X-Countersign: {{appCountersign}}
+
 ### アプリケーション一覧
 GET {{baseUrl}}/api/v2/applications
 Accept: application/json
