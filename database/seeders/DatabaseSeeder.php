@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
                 AccountSeeder::class,
                 PasswordSeeder::class,
                 PreregistedPasswordSeeder::class,
-                UnregistedPasswordSeeder::class,
             ]);
         });
     }

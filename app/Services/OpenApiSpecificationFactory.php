@@ -133,9 +133,6 @@ class OpenApiSpecificationFactory
                 'name' => '仮登録パスワード管理',
             ],
             [
-                'name' => '未登録パスワード管理',
-            ],
-            [
                 'name' => '共通',
             ],
         ];
@@ -493,17 +490,6 @@ class OpenApiSpecificationFactory
                 ],
                 'required' => ['application', 'account'],
             ],
-            'UnregistedPasswordIndexResponse' => $this->arraySchema('PreregistedPasswordIndexItem'),
-            'UnregistedPasswordResponse' => [
-                '$ref' => '#/components/schemas/PreregistedPasswordResponse',
-            ],
-            'DeleteAllUnregistedPasswordsResponse' => [
-                'type' => 'object',
-                'properties' => [
-                    'message' => ['type' => 'string'],
-                ],
-                'required' => ['message'],
-            ],
             'UnauthorizedResponse' => $this->messageOnlySchema(),
             'ForbiddenResponse' => $this->messageOnlySchema(),
             'NotFoundResponse' => $this->messageOnlySchema(),
@@ -746,12 +732,6 @@ class OpenApiSpecificationFactory
                 return 'PreregistedPasswordResponse';
             case 'PreregistedPasswordTargetShowController':
                 return 'PreregistedPasswordTargetResponse';
-            case 'UnregistedPasswordIndexController':
-                return 'UnregistedPasswordIndexResponse';
-            case 'UnregistedPasswordShowController':
-                return 'UnregistedPasswordResponse';
-            case 'UnregistedPasswordDeleteAllController':
-                return 'DeleteAllUnregistedPasswordsResponse';
             case 'ApplicationCreateController':
             case 'ApplicationUpdateController':
             case 'ApplicationDeleteController':
@@ -761,7 +741,6 @@ class OpenApiSpecificationFactory
             case 'PasswordCreateController':
             case 'PreregistedPasswordCreateController':
             case 'PreregistedPasswordDeleteController':
-            case 'UnregistedPasswordDeleteController':
                 return 'EmptySuccessResponse';
             default:
                 return 'GenericSuccessResponse';
@@ -868,10 +847,6 @@ class OpenApiSpecificationFactory
 
         if (Str::startsWith($route->uri(), 'api/v2/preregisted-passwords')) {
             return '仮登録パスワード管理';
-        }
-
-        if (Str::startsWith($route->uri(), 'api/v2/unregisted-passwords')) {
-            return '未登録パスワード管理';
         }
 
         return '共通';

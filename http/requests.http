@@ -212,23 +212,3 @@ Content-Type: application/json
 ### パスワード更新推奨対象一覧
 GET {{baseUrl}}/api/v2/password-update-promote
 Accept: application/json
-
-### 未登録パスワード一覧（管理者・Web ユーザー）
-GET {{baseUrl}}/api/v2/unregisted-passwords
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-
-### 未登録パスワード詳細（管理者・Web ユーザー）
-GET {{baseUrl}}/api/v2/unregisted-passwords/{{unregistedPasswordId}}
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-
-### 未登録パスワード削除（管理者・Web ユーザー）
-DELETE {{baseUrl}}/api/v2/unregisted-passwords/{{unregistedPasswordId}}
-Accept: application/json
-Authorization: Bearer {{accessToken}}
-
-### 未登録パスワード全件削除（管理者・Web ユーザー）
-DELETE {{baseUrl}}/api/v2/unregisted-passwords
-Accept: application/json
-Authorization: Bearer {{accessToken}}

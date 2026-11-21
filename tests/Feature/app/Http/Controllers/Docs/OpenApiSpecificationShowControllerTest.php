@@ -116,10 +116,6 @@ class OpenApiSpecificationShowControllerTest extends TestCase
             $specification['paths']['/api/v2/preregisted-passwords']['get']['responses']['200']['content']['application/json']['schema']['$ref']
         );
         $this->assertSame(
-            '#/components/schemas/UnregistedPasswordIndexResponse',
-            $specification['paths']['/api/v2/unregisted-passwords']['get']['responses']['200']['content']['application/json']['schema']['$ref']
-        );
-        $this->assertSame(
             '#/components/schemas/CheckResponse',
             $specification['paths']['/api/v2/check']['get']['responses']['200']['content']['application/json']['schema']['$ref']
         );
@@ -146,14 +142,6 @@ class OpenApiSpecificationShowControllerTest extends TestCase
         $this->assertSame(
             '仮登録パスワード管理',
             $specification['paths']['/api/v2/preregisted-passwords']['post']['tags'][0]
-        );
-        $this->assertSame(
-            '#/components/schemas/UnregistedPasswordResponse',
-            $specification['paths']['/api/v2/unregisted-passwords/{unregistedPassword}']['get']['responses']['200']['content']['application/json']['schema']['$ref']
-        );
-        $this->assertSame(
-            '#/components/schemas/DeleteAllUnregistedPasswordsResponse',
-            $specification['paths']['/api/v2/unregisted-passwords']['delete']['responses']['200']['content']['application/json']['schema']['$ref']
         );
         $this->assertSame(
             '#/components/schemas/AccountCreateValidationErrorResponse',
@@ -259,14 +247,6 @@ class OpenApiSpecificationShowControllerTest extends TestCase
         $this->assertSame(
             '仮登録パスワード管理',
             $specification['paths']['/api/v2/preregisted-passwords/target']['get']['tags'][0]
-        );
-        $this->assertSame(
-            '未登録パスワード管理',
-            $specification['paths']['/api/v2/unregisted-passwords']['get']['tags'][0]
-        );
-        $this->assertSame(
-            '未登録パスワード管理',
-            $specification['paths']['/api/v2/unregisted-passwords/{unregistedPassword}']['get']['tags'][0]
         );
         $this->assertSame(
             '共通',
