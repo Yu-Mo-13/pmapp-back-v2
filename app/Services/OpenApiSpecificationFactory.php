@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Requests\User\UserIndexRequest;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
@@ -147,6 +148,13 @@ class OpenApiSpecificationFactory
             ),
         ];
 
+        if ($route->named('users.index')) {
+            $responses['200'] = [
+                'description' => 'User list CSV download',
+                'content' => ['text/csv' => ['schema' => ['type' => 'string', 'format' => 'binary']]],
+            ];
+        }
+
         if ($this->requiresAuthentication($route)) {
             $responses['401'] = $this->buildJsonResponse('Unauthorized', 'UnauthorizedResponse');
         }
@@ -191,6 +199,15 @@ class OpenApiSpecificationFactory
 
     private function buildParameters(Route $route): array
     {
+        if ($route->named('users.index')) {
+            return [[
+                'name' => UserIndexRequest::COUNTERSIGN_HEADER,
+                'in' => 'header',
+                'required' => true,
+                'schema' => ['type' => 'string'],
+            ]];
+        }
+
         if (!in_array('GET', $this->extractMethods($route), true)) {
             return [];
         }
