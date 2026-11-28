@@ -120,6 +120,39 @@ class SupabaseAuthService
     }
 
     /**
+     * Update the authenticated user's attributes (email, password, etc.)
+     *
+     * @param string $token
+     * @param array $attributes
+     * @return array
+     * @throws Exception
+     */
+    public function updateUser(string $token, array $attributes): array
+    {
+        try {
+            $response = $this->client->put($this->supabaseUrl . '/auth/v1/user', [
+                'headers' => [
+                    'apikey' => $this->supabaseKey,
+                    'Authorization' => 'Bearer ' . $token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $attributes,
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            if ($response->getStatusCode() !== 200) {
+                throw new Exception('User update failed');
+            }
+
+            return $data;
+        } catch (GuzzleException $e) {
+            Log::error('Supabase user update error: ' . $e->getMessage());
+            throw new Exception('User update service unavailable');
+        }
+    }
+
+    /**
      * Sign out user
      *
      * @param string $token
