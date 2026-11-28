@@ -93,6 +93,15 @@ class SupabaseGuard implements Guard
         $user = $this->provider->retrieveByCredentials(['uid' => $uid]);
 
         if ($user) {
+            // Supabase側でメールアドレスが変更されていたらローカルDBにも同期する
+            // （メールアドレス変更は確認メールによる所有確認が完了した時点で
+            // Supabase側に反映されるため、ここで差分を検出して追随する）
+            $email = $supabaseUser['email'] ?? null;
+            if ($email && $user->email !== $email && !User::where('email', $email)->exists()) {
+                $user->email = $email;
+                $user->save();
+            }
+
             return $user;
         }
 
